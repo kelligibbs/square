@@ -10,11 +10,12 @@ var Output = require("./output");
 var playerSchema = characterSchema.extend({
 	category: { type: Number, default: global.CATEGORY_PLAYER },
 	password: String,
-	hunger: Number,
-	thirst: Number,
-	drunk: Number,
+	// hunger: Number,
+	// thirst: Number,
+	// drunk: Number,
 	maximumFullness: Number,
-	fullnessLevel: Number,
+	caloriesConsumed: [ Number ],
+	// fullnessLevel: Number,
 
 	title: String,
 
@@ -55,11 +56,8 @@ playerSchema.methods.start = function() {
 		this.weight = utility.randomNumber(100, 140);
 	}
 	
-	this.hunger = 24;
-	this.thirst = 24;
-	
-	this.fullnessLevel = global.FULLNESS_SATISFIED;
-	this.maximumFullness = this.hunger + this.thirst;
+	this.maximumFullness = 3000;
+	this.caloriesConsumed = [ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 ];
 	this.experience = 1;
 	
 	this.money = 10000;
@@ -186,28 +184,42 @@ playerSchema.methods.setTitle = function(title) {
 
 playerSchema.methods.hourlyUpdate = function() {
 	this.bank = this.bank + global.HOURLY_DOLLAR_BONUS;
-	
-	this.hunger = Math.max((this.hunger - 1), 0);
-	
-	if(this.hunger === 0) {
-		this.emitMessage("You are hungry.");
-		this.emitRoomMessage(this.name + "'s stomach growls loudly.");
-	}
-	
-	this.thirst = Math.max((this.thirst - 1), 0);
 
-	if(this.thirst === 0) {
-		this.emitMessage("You are thirsty.");
-		this.emitRoomMessage(this.name + " looks parched!");
-	}
+	this.caloriesConsumed.pop();
+	this.caloriesConsumed.unshift(0);
 	
-	if(this.drunk > 0) {
-		this.drunk = Math.max((this.drunk - 1), 0);
+	// this.hunger = Math.max((this.hunger - 1), 0);
+	
+	// if(this.hunger === 0) {
+	// 	this.emitMessage("You are hungry.");
+	// 	this.emitRoomMessage(this.name + "'s stomach growls loudly.");
+	// }
+	
+	// this.thirst = Math.max((this.thirst - 1), 0);
+
+	// if(this.thirst === 0) {
+	// 	this.emitMessage("You are thirsty.");
+	// 	this.emitRoomMessage(this.name + " looks parched!");
+	// }
+	
+	// if(this.drunk > 0) {
+	// 	this.drunk = Math.max((this.drunk - 1), 0);
 		
-		if(this.drunk === 0) {
-			this.emitMessage("You are now sober.");
-		}
-	}
+	// 	if(this.drunk === 0) {
+	// 		this.emitMessage("You are now sober.");
+	// 	}
+	// }
+	
+
+};
+
+playerSchema.methods.getFullnessIndex = function() {
+	var sum = this.caloriesConsumed.total();
+	console.log(this.maximumFullness);
+	
+	var index = sum / this.maximumFullness;
+	console.log(index);
+	return index;
 };
 
 playerSchema.methods.load = function(name, callback) {

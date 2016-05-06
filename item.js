@@ -1,6 +1,5 @@
 var mongoose = require('mongoose');
 var schema = mongoose.Schema;
-var extend = require('mongoose-schema-extend');
 var constants = require("./constants");
 
 var itemSchema = new schema({
@@ -23,7 +22,7 @@ var itemSchema = new schema({
 
 function load(id, item, commands, world, previousThing, instructionNumber, callback) {
 	itemModel.find({id: id}, function(err, docs) {
-		//console.log(err);
+		console.log(err);
 		callback(docs, item, commands, world, previousThing, instructionNumber);
 	});
 }
@@ -34,4 +33,4 @@ module.exports = {
 	schema: itemSchema,
 	item: itemModel,
 	load: load
-}
+};

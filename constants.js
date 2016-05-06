@@ -21,8 +21,8 @@ global.CATEGORY_EXTRA  = 3;
 
 global.START_ROOM    = 3001;
 
-global.PULSE_NPC = 10;   // 10 real seconds
-global.PULSE_MUD_HOUR = 75;
+global.PULSE_NPC      = 10;   // 10 real seconds
+global.PULSE_MUD_HOUR = 20;
 
 global.HOURLY_DOLLAR_BONUS = 100;
 
@@ -194,11 +194,11 @@ global.SCMD_WORSHIP    = 97;
 global.SCMD_YAWN       = 98;
 global.SCMD_YODEL      = 99;
 
-global.SCMD_EAT    = 0;
-global.SCMD_TASTE  = 1;
+// global.SCMD_EAT    = 0;
+// global.SCMD_TASTE  = 1;
 
-global.SCMD_DRINK = 0;
-global.SCMD_SIP   = 1;
+// global.SCMD_DRINK = 0;
+// global.SCMD_SIP   = 1;
 
 global.DRINKS = [
 	{ name: "water", color: "clear", drunkness: 0, thirst: 10 },

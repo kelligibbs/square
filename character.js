@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var schema = mongoose.Schema;
+var arrayExtensions = require('./arrayExtensions');
 var extend = require('mongoose-schema-extend');
 var constants = require("./constants");
 var Social =  require("./social");
@@ -718,176 +719,164 @@ characterSchema.methods.junkItem = function(keyword) {
 // // 	thisSocial.emitMessages();
 // // };
 
-// characterSchema.methods.eatObject = function(object, mode) {
-// 	var messages = [];
-// 	var extractObject = false;
-// 	var amount = 0;
+characterSchema.methods.eatObject = function(object) {
+	var messages = [];
 
-// 	if(mode === global.SCMD_EAT) {
-// 		messages[0] = this.emitMessage("You eat " + object.shortDescription + ".");
-// 		messages[1] = this.emitRoomMessage(this.name + " eats " + object.shortDescription + ".");
-// 		amount = object.hoursOfHunger;
-// 		extractObject = true;
-// 	}
-// 	else if(mode === global.SCMD_TASTE) {
-// 		messages[0] = this.emitMessage("You nibble a little bit of " + object.shortDescription + ".");
-// 		messages[1] = this.emitRoomMessage(this.name + " nibbles a little bit of " + object.shortDescription + ".");
-// 		amount = 1;
-		
-// 		if(--object.hoursOfHunger <= 0) {
-// 			extractObject = true;
-// 		}
-// 	}
-	
-// 	// if(!this.isNpc()) {
-// 	// 	this.hunger = this.hunger + amount;
-// 	// 	this.hunger = Math.min(this.hunger, 24);
-// 	// }
-	
-// 	this.hunger = this.hunger + amount;
-// 	this.updateFullness();
+	messages[0] = "You eat " + object.shortDescription + ".";
+	messages[1] = "ACTOR_NAME eats " + object.shortDescription + ".";
 
-// 	if(extractObject) {
-// 		if(mode === global.SCMD_TASTE) {
-// 			messages[2] = this.emitMessage("There's nothing left of it now.");
-// 		}
-		
-// 		this.inventory.splice(this.inventory.indexOf(object), 1);
-// 		this.world.removeItem(object);
-// 	}
+	// if(!this.isNpc()) {
+	// 	this.hunger = this.hunger + amount;
+	// 	this.hunger = Math.min(this.hunger, 24);
+	// }
 
-// 	return messages;
-// };
+	this.caloriesConsumed[0] = this.caloriesConsumed[0] + object.calories;
+	
+	// this.hunger = this.hunger + amount;
+	// this.updateFullness();
 
-// characterSchema.methods.eatItem = function(keyword, mode) {
-// 	var messages = [];
-// 	var result = this.inventory.findByKeyword(keyword);
 
-// 	if(result.items.length === 0) {
-// 		messages.push(this.emitMessage("Eat what?!?"));
-// 		return messages;
-// 	}
+	this.inventory.splice(this.inventory.indexOf(object), 1);
+	this.world.removeItem(object);
+	
+	return messages;
+};
 
-// 	for(var i = 0; i < result.items.length; i++) {
-// 		if(result.items[i].type !== global.ITEM_FOOD) {
-// 			messages.push(this.emitMessage(result.items[i].shortDescription + " -- You can't eat THAT!"));
-// 		}
-// 		else {
-// 			messages.push(this.eatObject(result.items[i], mode));
-// 		}
-// 	}
-	
-// 	return messages;
-// };
+characterSchema.methods.eatItem = function(keyword) {
+	var output = new Output(this);
+	var result = this.inventory.findByKeyword(keyword);
 
-// characterSchema.methods.getFullnessIndex = function() {
-// 	var fullness = this.hunger + this.thirst;
-// 	var fullnessIndex = fullness / this.maximumFullness;
-	
-// 	return fullnessIndex;
-// };
+	if(result.items.length === 0) {
+		output.toActor( { text: "Eat what?!?" } );
+		return output;
+	}
 
-// characterSchema.methods.updateFullness = function() {
-// 	if(this.fullnessLevel === 0 && this.hunger > 0) {
-// 		// no longer hungry
-// 		return;
-// 	}
-	
-// 	var fullnessIndex = this.getFullnessIndex();
-	
-	
-// 	if(fullnessIndex > 0.9 && this.fullnessLevel < global.FULLNESS_SATISFIED) {
-// 		this.fullnessLevel = global.FULLNESS_SATISFIED;
-		
-// 		this.emitMessage("You feel satisfied.");
-		
-// 		return;
-// 	}
-	
-// 	if(fullnessIndex > 1.1 && this.fullnessLevel < global.FULLNESS_FULL) {
-// 		this.fullnessLevel = global.FULLNESS_FULL;
+	var beforeFullnessIndex = this.getFullnessIndex();
 
-// 		this.emitMessage("You feel full.");
-// 		return;
-// 	}
+	for(var i = 0; i < result.items.length; i++) {
+		if(result.items[i].type !== global.ITEM_FOOD) {
+			output.toActor.push( { text: result.items[i].shortDescription + " -- You can't eat THAT!" } );
+		}
+		else {
+			var messages = this.eatObject(result.items[i]);
+			output.toActor.push( { text: messages[0] } );
+			output.toRoom.push( { roomId: this.room.id, textArray: [ { text: messages[1] } ] } );
+		}
+	}
 	
-// 	if(fullnessIndex > 1.3 && this.fullnessLevel < global.FULLNESS_VERYFULL) {
-// 		this.fullnessLevel = global.FULLNESS_VERYFULL;
-		
-// 		this.emitMessage("You feel VERY full.");
-// 		return;
-// 	}
+	var afterFullnessIndex = this.getFullnessIndex();
+	
+	var fullnessMessages = this.updateFullness(beforeFullnessIndex, afterFullnessIndex);
+	
+	if(fullnessMessages.length > 0) {
+		output.toActor.push( { text: fullnessMessages[0] } );
+		output.toRoom.push( { roomId: this.room.id, textArray: [ { text: fullnessMessages[1] } ] } );		
+	}
 
-// 	if(fullnessIndex > 1.6 && this.fullnessLevel < global.FULLNESS_EXTREMELYFULL) {
-// 		this.fullnessLevel = global.FULLNESS_EXTREMELYFULL;
-		
-// 		// extremely full
-// 		return;
-// 	}
+	return output;
+};
+
+characterSchema.methods.updateFullness = function(beforeFullnessIndex, afterFullnessIndex) {
+	// var messages = [];
+	
+	// if(beforeFullnessIndex < 6.0 && afterFullnessIndex > 6.0) {
+	// 	this.maximumFullness++;
+	// 	// TODO: Pass out
+	// }
 	
 	
-// 	if(fullnessIndex > 2.0 && this.fullnessLevel < global.FULLNESS_STUFFED) {
-// 		this.fullnessLevel = global.FULLNESS_STUFFED;
+	// if(beforeFullnessIndex < 0.5 && afterFullnessIndex > 0.5) {
+	// 	this.fullnessLevel = global.FULLNESS_SATISFIED;
 		
-// 		this.maximumFullness++;
-// 		return;
-// 	}
+	// 	this.emitMessage("You feel satisfied.");
+		
+	// 	return;
+	// }
 	
-// 	if(fullnessIndex > 2.5 && this.fullnessLevel < global.FULLNESS_INSANELYSTUFFED) {
-// 		this.fullnessLevel = global.FULLNESS_INSANELYSTUFFED;
-		
-// 		return;
-// 	}
+	// if(fullnessIndex > 1.1 && this.fullnessLevel < global.FULLNESS_FULL) {
+	// 	this.fullnessLevel = global.FULLNESS_FULL;
+
+	// 	this.emitMessage("You feel full.");
+	// 	return;
+	// }
 	
-// 	if(fullnessIndex > 3.0 && this.fullnessLevel < global.FULLNESS_MAXIMUMFULL) {
-// 		this.fullnessLevel = global.FULLNESS_MAXIMUMFULL;
+	// if(fullnessIndex > 1.3 && this.fullnessLevel < global.FULLNESS_VERYFULL) {
+	// 	this.fullnessLevel = global.FULLNESS_VERYFULL;
 		
-// 		return;
-// 	}
+	// 	this.emitMessage("You feel VERY full.");
+	// 	return;
+	// }
+
+	// if(fullnessIndex > 1.6 && this.fullnessLevel < global.FULLNESS_EXTREMELYFULL) {
+	// 	this.fullnessLevel = global.FULLNESS_EXTREMELYFULL;
+		
+	// 	// extremely full
+	// 	return;
+	// }
 	
-// 	if(fullnessIndex > 3.3 && this.fullnessLevel < global.FULLNESS_OVERMAXIMUM) {
-// 		this.fullnessLevel = global.FULLNESS_OVERMAXIMUM;
-		
-// 		return;
-// 	}
 	
-// 	if(fullnessIndex > 3.6 && this.fullnessLevel < global.FULLNESS_SWEATING) {
-// 		this.fullnessLevel = global.FULLNESS_SWEATING;
+	// if(fullnessIndex > 2.0 && this.fullnessLevel < global.FULLNESS_STUFFED) {
+	// 	this.fullnessLevel = global.FULLNESS_STUFFED;
 		
-// 		return;
-// 	}
+	// 	this.maximumFullness++;
+	// 	return;
+	// }
 	
-// 	if(fullnessIndex > 4.0 && this.fullnessLevel < global.FULLNESS_SHORTBREATH) {
-// 		this.fullnessLevel = global.FULLNESS_SHORTBREATH;
+	// if(fullnessIndex > 2.5 && this.fullnessLevel < global.FULLNESS_INSANELYSTUFFED) {
+	// 	this.fullnessLevel = global.FULLNESS_INSANELYSTUFFED;
 		
-// 		return;
-// 	}
+	// 	return;
+	// }
+	
+	// if(fullnessIndex > 3.0 && this.fullnessLevel < global.FULLNESS_MAXIMUMFULL) {
+	// 	this.fullnessLevel = global.FULLNESS_MAXIMUMFULL;
+		
+	// 	return;
+	// }
+	
+	// if(fullnessIndex > 3.3 && this.fullnessLevel < global.FULLNESS_OVERMAXIMUM) {
+	// 	this.fullnessLevel = global.FULLNESS_OVERMAXIMUM;
+		
+	// 	return;
+	// }
+	
+	// if(fullnessIndex > 3.6 && this.fullnessLevel < global.FULLNESS_SWEATING) {
+	// 	this.fullnessLevel = global.FULLNESS_SWEATING;
+		
+	// 	return;
+	// }
+	
+	// if(fullnessIndex > 4.0 && this.fullnessLevel < global.FULLNESS_SHORTBREATH) {
+	// 	this.fullnessLevel = global.FULLNESS_SHORTBREATH;
+		
+	// 	return;
+	// }
 
 	
-// 	if(fullnessIndex > 4.5 && this.fullnessLevel < global.FULLNESS_PANIC) {
-// 		this.fullnessLevel = global.FULLNESS_PANIC;
+	// if(fullnessIndex > 4.5 && this.fullnessLevel < global.FULLNESS_PANIC) {
+	// 	this.fullnessLevel = global.FULLNESS_PANIC;
 		
-// 		return;
-// 	}	
+	// 	return;
+	// }	
 
-// 	if(fullnessIndex > 5.0 && this.fullnessLevel < global.FULLNESS_HALLUCINATING) {
-// 		this.fullnessLevel = global.FULLNESS_HALLUCINATING;
+	// if(fullnessIndex > 5.0 && this.fullnessLevel < global.FULLNESS_HALLUCINATING) {
+	// 	this.fullnessLevel = global.FULLNESS_HALLUCINATING;
 		
-// 		return;
-// 	}	
+	// 	return;
+	// }	
 	
-// 	if(fullnessIndex > 5.5 && this.fullnessLevel < global.FULLNESS_READYTOPOP) {
-// 		this.fullnessLevel = global.FULLNESS_READYTOPOP;
+	// if(fullnessIndex > 5.5 && this.fullnessLevel < global.FULLNESS_READYTOPOP) {
+	// 	this.fullnessLevel = global.FULLNESS_READYTOPOP;
 		
-// 		return;
-// 	}
+	// 	return;
+	// }
 
-// 	if(fullnessIndex > 6.0 && this.fullnessLevel < global.FULLNESS_PASSEDOUT) {
-// 		this.fullnessLevel = global.FULLNESS_PASSEDOUT;
+	// if(fullnessIndex > 6.0 && this.fullnessLevel < global.FULLNESS_PASSEDOUT) {
+	// 	this.fullnessLevel = global.FULLNESS_PASSEDOUT;
 		
-// 		return;
-// 	}	
-// };
+	// 	return;
+	// }	
+};
 
 // characterSchema.methods.drinkFromObject = function(object, mode) {
 // 	var messages = [];

@@ -8,6 +8,7 @@ var mongoose = require('mongoose');
 var world = require('./world');
 var room = require('./room');
 var zone = require('./zone');
+var food = require('./food');
 var interpreter = require('./interpreter');
 
 // TODO: Room

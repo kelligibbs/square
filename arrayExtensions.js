@@ -129,5 +129,15 @@ Array.prototype.containsItemByType = function(type) {
 	return false;
 };
 
+Array.prototype.total = function() {
+	var total = 0;	
+	
+	for(var i = 0; i < this.length; i++) {
+		total = total + parseInt(this[i], 10);
+	}
+
+	return total;
+};
+
 // Exports
 module.exports = Array;
