@@ -78,7 +78,7 @@ var COMMAND_LIST = [
           { command: "fume"     , minimumPosition: global.POS_RESTING , functionPointer: do_action     , minimumLevel: 0, subCommand: global.SCMD_FUME },
 
           { command: "gasp"     , minimumPosition: global.POS_RESTING , functionPointer: do_action     , minimumLevel: 0, subCommand: global.SCMD_GASP },
-        //   { command: "get"      , minimumPosition: global.POS_RESTING , functionPointer: do_take       , minimumLevel: 0, subCommand: 0 },          
+          { command: "get"      , minimumPosition: global.POS_RESTING , functionPointer: do_take       , minimumLevel: 0, subCommand: 0 },          
           { command: "giggle"   , minimumPosition: global.POS_RESTING , functionPointer: do_action     , minimumLevel: 0, subCommand: global.SCMD_GIGGLE },
 //           { command: "give"     , minimumPosition: global.POS_RESTING , functionPointer: do_give       , minimumLevel: 0, subCommand: 0 },
           { command: "glare"    , minimumPosition: global.POS_RESTING,  functionPointer: do_action     , minimumLevel: 0, subCommand: global.SCMD_GLARE },
@@ -193,7 +193,7 @@ var COMMAND_LIST = [
           { command: "sulk"     , minimumPosition: global.POS_RESTING , functionPointer: do_action     , minimumLevel: 0, subCommand: global.SCMD_SULK },
 
           { command: "tackle"   , minimumPosition: global.POS_RESTING , functionPointer: do_action     , minimumLevel: 0, subCommand: global.SCMD_TACKLE },
-        //   { command: "take"     , minimumPosition: global.POS_RESTING , functionPointer: do_take       , minimumLevel: 0, subCommand: 0 },
+          { command: "take"     , minimumPosition: global.POS_RESTING , functionPointer: do_take       , minimumLevel: 0, subCommand: 0 },
           { command: "tango"    , minimumPosition: global.POS_STANDING, functionPointer: do_action     , minimumLevel: 0, subCommand: global.SCMD_TANGO },
         //   { command: "taste"    , minimumPosition: global.POS_RESTING , functionPointer: do_eat        , minimumLevel: 0, subCommand: global.SCMD_TASTE },
           { command: "taunt"    , minimumPosition: global.POS_RESTING , functionPointer: do_action     , minimumLevel: 0, subCommand: global.SCMD_TAUNT },
@@ -502,27 +502,29 @@ function do_gen_comm(character, command) {
 //      character.world.removeCharacter(character);
 // }
 
-// function do_take(character, command) {
-//     if(command.tokens.length === 0) {
-//         character.emitMessage("Take what?");
-//     }
-//     else {
-//         if(command.tokens.length === 1) {
-//             character.takeItem(command.tokens[0]);
-//         }
-//         else {
-//             if(command.tokens.length === 2) {
-//                 character.takeItemFromContainer(command.tokens[0], command.tokens[1]);
-//             }
-//             else if(command.tokens.length === 3 && command.tokens[1].toLowerCase() === 'from') {
-//                 character.takeItemFromContainer(command.tokens[0], command.tokens[2]);
-//             }
-//             else {
-//                 command.emitMessage("I have no idea what you're trying to do.");
-//             }
-//         }
-//     }
-// }
+function do_take(character, command) {
+    if(command.tokens.length === 0) {
+        character.emitMessage("Take what?");
+    }
+    else {
+        if(command.tokens.length === 1) {
+            character.takeItem(command.tokens[0]).emit();
+        }
+        else {
+            if(command.tokens.length === 2) {
+                // TODO: Implement
+                // character.takeItemFromContainer(command.tokens[0], command.tokens[1]).emit();
+            }
+            else if(command.tokens.length === 3 && command.tokens[1].toLowerCase() === 'from') {
+                // TODO: Implement
+                // character.takeItemFromContainer(command.tokens[0], command.tokens[2]).emit();
+            }
+            else {
+                command.emitMessage("I have no idea what you're trying to do.");
+            }
+        }
+    }
+}
 
 // function do_donate(character, command) {
 //     if(command.tokens.length === 0) {
@@ -607,10 +609,9 @@ function do_title(character, command) {
 
 function do_report_bug(character, command) {
     var bugReport = command.subInput.trim();
-    var output = new Output(character);
     
     if(bugReport.length === 0) {
-        output.toActor.push( { text: "Ok, but what's the bug you want to report?" } );
+        character.emitMessage("Ok, but what's the bug you want to report?");
     }
     else {
         var bugToSave = new bug( { reporter: character.name, message: bugReport } );
@@ -619,18 +620,15 @@ function do_report_bug(character, command) {
           // TODO: Log error?
         });        
         
-        output.toActor.push( { text: "Ok. Thanks for the bug report." } );
+        character.emitMessage("Ok. Thanks for the bug report.");
     }
-    
-    output.emit();
 }
 
 function do_submit_idea(character, command) {
     var ideaReport = command.subInput.trim();
-    var output = new Output(character);
-    
+
     if(ideaReport.length === 0) {
-        output.toActor.push( { text: "Ok, but what's your idea?" } );
+        character.emitMessage("Ok, but what's your idea?");
     }
     else {
         var ideaToSave = new idea( { reporter: character.name, message: ideaReport } );
@@ -639,18 +637,15 @@ function do_submit_idea(character, command) {
           // TODO: Log error?
         });        
         
-        output.toActor.push( { text: "Ok. Thanks for the idea!" });
+        character.emitMessage("Ok. Thanks for the idea!");
     }
-    
-    output.emit();
 }
 
 function do_report_typo(character, command) {
     var typoReport = command.subInput.trim();
-    var output = new Output(character);
 
     if(typoReport.length === 0) {
-        output.toActor.push( { text: "Ok, but what's the typo you want to report?" } );
+        character.emitMessage("Ok, but what's the typo you want to report?");
     }
     else {
         var typoToSave = new typo( { reporter: character.name, message: typoReport } );
@@ -659,7 +654,7 @@ function do_report_typo(character, command) {
           // TODO: Log error?
         });        
         
-        output.toActor.push( { text: "Ok. Thanks for reporting the typo." } );
+        character.emitMessage("Ok. Thanks for reporting the typo.");
     }
 }
 

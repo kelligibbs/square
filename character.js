@@ -445,16 +445,16 @@ characterSchema.methods.generalCommunication = function(subCommand, message) {
 // };
 
 
-// characterSchema.methods.takeObject = function(object) {
-// 	var messages = [];
+characterSchema.methods.takeObject = function(object) {
+	var messages = [];
 
-// 	this.room.removeItem(object);
-// 	this.inventory.push(object);
-// 	messages[0] = this.emitMessage("You take " + object.shortDescription + ".");
-// 	messages[1] = this.emitRoomMessage(this.name + " takes " + object.shortDescription + ".");
+	this.room.removeItem(object);
+	this.inventory.push(object);
+	messages[0] = "You take " + object.shortDescription + ".";
+	messages[1] = "ACTOR_NAME takes " + object.shortDescription + ".";
 	
-// 	return messages;
-// };
+	return messages;
+};
 
 // characterSchema.methods.takeObjects = function(objectArray) {
 // 	var messages = [];
@@ -479,50 +479,57 @@ characterSchema.methods.generalCommunication = function(subCommand, message) {
 // 	return messages;
 // };
 
-// characterSchema.methods.takeItem = function(keyword) {
-// 	var messages = [];
+characterSchema.methods.takeItem = function(keyword) {
+	var output = new Output(this);
 	
-// 	if(keyword === null || keyword.length === 0) {
-//  		messages[0] = this.emitMessage("But what do you want to take?");
-//  		return messages;
-// 	}
+	if(keyword === null || keyword.length === 0) {
+ 		output.toActor.push( { text: "But what do you want to take?" } );
+ 		return output;
+	}
 	
-//  	var result = this.room.contents.findByKeyword(keyword);
+ 	var result = this.room.contents.findByKeyword(keyword);
 
-// 	if(result.mode === 'all.item' && result.items.length === 0) {
-// 		messages[0] = this.emitMessage("You can't seem to find any '" + result.token + "' things here.");
-// 		return messages;
-// 	}
+	if(result.mode === 'all.item' && result.items.length === 0) {
+		output.toActor.push( { text: "You can't seem to find any '" + result.token + "' things here." } );
+		return output;
+	}
 
-// 	if(result.items.length === 0) {
-// 		messages[0] = this.emitMessage("You can't seem to find any '" + keyword + "' here.");
-// 		return messages;
-// 	}
+	if(result.items.length === 0) {
+		output.toActor.push( { text: "You can't seem to find any '" + keyword + "' here." } );
+		return output;
+	}
 
-// 	for(var i = 0; i < result.items.length; i++) {
-// 		if(result.items[i].canBeTaken === true) {
-// 			// if(this.inventory.length + 1 > this.getMaxCarried()) {
-// 			// 	messages.push(this.emitMessage(result.items[i].shortDescription + ": You carry that many items."));
-// 			// }
-// 			// else if(this.getCarriedWeight() + result.items[i].weight > this.getMaxCarriedWeight()) {
-// 			// 		messages.push(this.emitMessage(result.items[i].shortDescription + ": You carry that much weight."));
-// 			// }
-// 			// else {
-// 				if(result.items[i].type === global.ITEM_MONEY) {
-// 					messages.push(this.takeMoney(result.items[i]));
-// 				}
-// 				else {
-// 					messages.push(this.takeObject(result.items[i]));
-// 				}
-// 			// }
-// 		}
-// 		else {
-// 			messages.push(this.emitMessage(result.items[i].shortDescription + ": You can't take THAT!"));
-// 		}
-// 	}
+	for(var i = 0; i < result.items.length; i++) {
+		if(result.items[i].canBeTaken === true) {
+			// if(this.inventory.length + 1 > this.getMaxCarried()) {
+			// 	messages.push(this.emitMessage(result.items[i].shortDescription + ": You carry that many items."));
+			// }
+			// else if(this.getCarriedWeight() + result.items[i].weight > this.getMaxCarriedWeight()) {
+			// 		messages.push(this.emitMessage(result.items[i].shortDescription + ": You carry that much weight."));
+			// }
+			// else {
+				// if(result.items[i].type === global.ITEM_MONEY) {
+				// 	messages.push(this.takeMoney(result.items[i]));
+				// }
+				// else {
+					// messages.push(this.takeObject(result.items[i]));
+				
+					var messages = this.takeObject(result.items[i]);
+					
+					output.toActor.push( { text: messages[0] } );
+					output.toRoom.push( { roomId: this.room.id, textArray: [ { text: messages[1] } ] } );
+					
+				
+				// }
+			// }
+		}
+		else {
+			output.toActor.push( { text: result.items[i].shortDescription + ": You can't take THAT!" } );
+		}
+	}
 	
-// 	return messages;
-// };
+	return output;
+};
 
 // characterSchema.methods.takeObjectFromContainer = function(object, container) {
 // 	var messages = [];
