@@ -55,6 +55,7 @@ global.SCMD_SHOUT   = 1;
 global.SCMD_GOSSIP  = 2;
 global.SCMD_AUCTION = 3;
 global.SCMD_GRATZ   = 4;
+global.SCMD_QSAY    = 5;
 
 global.POS_DEAD       = 0;
 global.POS_MORTALLYW  = 1;
@@ -78,7 +79,7 @@ global.ITEM_OTHER = "Other";
 global.ITEM_TRASH = "Trash";
 global.ITEM_CONTAINER = "Container";
 global.ITEM_NOTE = "Note";
-global.ITEM_DRINKCONTAINER  = "DrinkContainer";
+global.ITEM_DRINKCONTAINER = "DrinkContainer";
 global.ITEM_KEY = "Key";
 global.ITEM_FOOD  = "Food";
 global.ITEM_MONEY = "Money";

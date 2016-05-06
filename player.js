@@ -5,6 +5,7 @@ var arrayExtensions = require('./arrayExtensions');
 var constants = require("./constants");
 var characterSchema = require("./character").schema;
 var utility = require("./utility");
+var Output = require("./output");
 
 var playerSchema = characterSchema.extend({
 	category: { type: Number, default: global.CATEGORY_PLAYER },
@@ -31,10 +32,12 @@ playerSchema.methods.enterGame = function(world) {
 	world.addCharacter(this);
 	var room = world.getStartRoom();
 	room.addCharacter(this);
-	this.emitRoomMessage(this.name + " has entered the game.");
-	room.showRoomToCharacter(this);
 	this.position = global.POS_STANDING;
 	
+	var output = room.showRoomToCharacter(this);
+	output.toRoom.push( { text: this.name + " has entered the game." } );
+	output.emit();
+
 	this.keywords = [];
 	this.keywords.push(this.name);
 	

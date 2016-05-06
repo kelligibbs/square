@@ -3,6 +3,7 @@ var schema = mongoose.Schema;
 var arrayExtensions = require('./arrayExtensions');
 var constants = require('./constants');
 var utility = require("./utility");
+var Output = require("./output");
 
 var exitSchema = new schema({
 	direction: String,
@@ -144,23 +145,23 @@ roomSchema.methods.getExit = function(direction) {
 };
 
 roomSchema.methods.listExits = function(character) {
-	var messages = [];
+	var output = new Output(character);
 	
 	// TODO: Blind, Dark
 
-	messages.push(character.emitMessage("Obvious Exits:"));
+	output.toActor.push( { text: "Obvious Exits:" } );
 	
 	for(var i = 0; i < this.exits.length; i++) {
 		if(this.exits[i].isClosed === false) {
 			var connectedRoom = character.world.getRoom(this.exits[i].toRoomId);
 			
 			if(connectedRoom !== null) {
-				messages.push(character.emitMessage("  " + this.exits[i].direction + " - " + connectedRoom.title));
+				output.toActor.push ( { text: "  " + this.exits[i].direction + " - " + connectedRoom.title } );
 			}
 		}
 	}
 	
-	return messages;
+	return output;
 };
 
 roomSchema.methods.getAdjacentRoom = function(exit) {
@@ -204,13 +205,13 @@ roomSchema.methods.getContentsExtras = function() {
 };
 
 roomSchema.methods.showRoomToCharacter = function(character) {
-	var description = [];
+	var output = new Output(character);
 
 // // 	// TODO: Dark room, blind character
 
-	description.push( { text: this.title, color: "Cyan" } );
+	output.toActor.push( { text: this.title, color: "Cyan" } );
 	
-	description.push( { text: utility.getFormattedLongString(this.description, true), color: "Gray" } );
+	output.toActor.push( { text: utility.getFormattedLongString(this.description, true), color: "Gray" } );
 
 	var exitsMessage = "";
 
@@ -229,32 +230,33 @@ roomSchema.methods.showRoomToCharacter = function(character) {
 		exitsMessage = " None!";
 	}
 	
-	description.push( { text: "[ Exits:" + exitsMessage + " ]", color: "Cyan" } );
+	output.toActor.push( { text: "[ Exits:" + exitsMessage + " ]", color: "Cyan" } );
 
  	for (var i = 0; i < this.players.length; i++) {
  		if (this.players[i] !== character) {
  			// TODO: if character.canSee(this.players[i])
- 			description.push( { text: this.players[i].getDescription(), color: "Orange" } );
+ 			output.toActor.push( { text: this.players[i].getDescription(), color: "Orange" } );
  		}
  	}
  	
  	for(var j = 0; j < this.npcs.length; j++) {
  		// TODO: if character.canSee(this.npcs[i])
- 		description.push( { text: this.mobs[j].longDescription, color: "Orange" } );
+ 		output.toActor.push( { text: this.mobs[j].longDescription, color: "Orange" } );
  	}
 
  	for (var i = 0; i < this.contents.length; i++) {
  		// TODO: if character.canSee(this.contents[i])
- 		description.push( { text: this.contents[i].longDescription, color: 'Green' } );
+ 		output.toActor.push( { text: this.contents[i].longDescription, color: 'Green' } );
  	}
 
-	character.emitMessages(description);
-	return description;
+	// character.emitMessages(description);
+	return output;
 };
 
 function load(callback) {
 	roomModel.find({}, function(err, docs) {
-		//console.log(err);
+		// TODO: log error
+		console.log(err);
 		callback(docs);
 	});
 }

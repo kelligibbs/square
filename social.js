@@ -1,3 +1,5 @@
+var Output = require("./output");
+
 // Object constructor
 function Social(social, parameter, actor) {
     this.social = social;
@@ -5,149 +7,94 @@ function Social(social, parameter, actor) {
     this.actor = actor;
 }
 
-Social.prototype.format = function(message) {
-    var returnMessage = message.replace(/ACTOR_NAME/g, this.actor.name)
-        .replace(/ACTOR_PRONOUN_POSSESSIVE/g, this.actor.getPossessivePronoun())
-        .replace(/ACTOR_PRONOUN_OBJECT/g, this.actor.getObjectPronoun())
-        .replace(/ACTOR_PRONOUN_SUBJECT/g, this.actor.getPersonalPronoun());
-        
-        if(this.target !== undefined) {
-            returnMessage = returnMessage.replace(/TARGET_NAME/g, this.target.name)
-                .replace(/TARGET_PRONOUN_POSSESSIVE/g, this.target.getPossessivePronoun())
-                .replace(/TARGET_PRONOUN_OBJECT/g, this.target.getObjectPronoun())
-                .replace(/TARGET_PRONOUN_SUBJECT/g, this.target.getPersonalPronoun());
-        }
-
-    return returnMessage;
-};
-
-Social.prototype.emitMessages = function() {
+Social.prototype.getOutput = function() {
     if (this.parameter === '') {
-        return this.emitSocialWithoutTarget();
-    }
-    else if(this.social.targetFoundMessages === undefined) {
-        return this.emitSocialWithoutTarget();
-    }
-    else {
+        return this.getOutputWithoutTarget();
+    } 
+    
+    if(this.social.targetFoundMessages === undefined) {
+        return this.getOutputWithoutTarget();
+    } 
+    
+    if(this.actor.room !== undefined) {
         var target = this.actor.room.getCharacter(this.parameter);
         
         if(target === null) {
-            return this.emitSocialToActorTargetMissing();
+            return this.getOutputToActorTargetMissing();
         }
-        else if(target === this.actor) {
-            return this.emitSocialWhenSelfIsTarget();
+        
+        if(target === this.actor) {
+            return this.getOutputWhenSelfIsTarget();
         }
-        else {
-            this.target = target;
-            
-            if(this.target.position < this.social.minimumTargetPosition) {
-                return this.emitWrongPosition();
-            }
-            else {
-                return this.emitSocialToActorTargetRoom();
-            }
+        
+        this.target = target;
+        
+        if(this.target.position < this.social.minimumTargetPosition) {
+            return this.getWrongPosition();
         }
     }
+    
+    return this.getOutputToActorTargetRoom();
 };
 
-Social.prototype.emitSocialWithoutTarget = function() {
-    var emittedMessages = [];
-    
-    var messageToActor = this.format(this.social.noTargetMessages.toActor);
-    this.emitSocialMessageToActor(messageToActor);
-    emittedMessages.push(messageToActor);
+Social.prototype.getOutputWithoutTarget = function() {
+    var output = new Output(this.actor);
+    // output.toActor = { text: this.social.noTargetMessages.toActor };
+    output.toActor.push( { text: this.social.noTargetMessages.toActor } );
 
-    if (this.social.noTargetMessages.toRoom !== "#") {
-        var messageToRoom = this.format(this.social.noTargetMessages.toRoom);
-        this.emitSocialMessageToRoom(messageToRoom);
-        emittedMessages.push(messageToRoom);
+    if(this.social.noTargetMessages.toRoom !== "#") {
+        // output.toRoom = { text: this.social.noTargetMessages.toRoom };
+        output.toRoom.push( { text: this.social.noTargetMessages.toRoom } );
     }
-    
-    return emittedMessages;
+
+    return output;
 };
 
-Social.prototype.emitSocialWhenSelfIsTarget = function() {
-    var emittedMessages = [];
+Social.prototype.getOutputWhenSelfIsTarget = function() {
+    var output = new Output(this.actor);
     
-    var messageToActor = this.format(this.social.targetSelfMessages.toActor);
-    this.emitSocialMessageToActor(messageToActor);
-    emittedMessages.push(messageToActor);
-
-    if (this.social.targetSelfMessages.toRoom !== "#") {
-        var messageToRoom = this.format(this.social.targetSelfMessages.toRoom);
-        this.emitSocialMessageToRoom(messageToRoom);
-        emittedMessages.push(messageToRoom);
-    }
+    // output.toActor = { text: this.social.targetSelfMessages.toActor };
+    // output.toRoom = { text: this.social.targetSelfMessages.toRoom };
     
-    return emittedMessages;
+    output.toActor.push( { text: this.social.targetSelfMessages.toActor } );
+    output.toRoom.push( { text: this.social.targetSelfMessages.toRoom } );
+    
+    return output;
 };
 
-Social.prototype.emitSocialToActorTargetRoom = function() {
-    var emittedMessages = [];
+Social.prototype.getOutputToActorTargetRoom = function() {
+    var output = new Output(this.actor);
+
+    output.target = this.target;
     
-    var messageToActor = this.format(this.social.targetFoundMessages.toActor);
-    this.emitSocialMessageToActor(messageToActor);
-    emittedMessages.push(messageToActor);
+    // output.toActor = { text: this.social.targetFoundMessages.toActor };
+    // output.toTarget = { text: this.social.targetFoundMessages.toTarget };
+    // output.toRoom = { text: this.social.targetFoundMessages.toRoom };
+
+    output.toActor.push( { text: this.social.targetFoundMessages.toActor } );
+    output.toTarget.push( { text: this.social.targetFoundMessages.toTarget } );
+    output.toRoom.push( { text: this.social.targetFoundMessages.toRoom } );
     
-    var messageToVictim = this.format(this.social.targetFoundMessages.toTarget);
-    this.emitSocialMessageToVictim(messageToVictim);
-    emittedMessages.push(messageToVictim);
-    
-    var messageToRoom = this.format(this.social.targetFoundMessages.toRoom);
-    this.emitSocialMessageToRoomExceptVictim(messageToRoom);
-    emittedMessages.push(messageToRoom);
-    
-    return emittedMessages;
+    return output;
 };
 
-Social.prototype.emitSocialToActorTargetMissing = function() {
-    var emittedMessages = [];
-    var messageToActor = this.format(this.social.targetNotFoundMessages.toActor);
-    this.emitSocialMessageToActor(messageToActor);
-    emittedMessages.push(messageToActor);
-    return emittedMessages;
-};
-
-Social.prototype.emitWrongPosition = function() {
-    var emittedMessages = [];
-    var messageToActor = this.target.name + " is not in a proper position for that.";
-    this.emitSocialMessageToActor(messageToActor);
-    emittedMessages.push(messageToActor);
-    return emittedMessages;
-};
-
-Social.prototype.emitSocialMessageToActor = function(message) {
-    this.actor.emitMessage(message);
-};
-
-Social.prototype.emitSocialMessageToVictim = function(message) {
-    if(this.victim !== undefined) {
-        this.victim.emitMessage(message);
-    }
-};
-
-Social.prototype.emitSocialMessageToRoom = function(message) {
-    var players = this.actor.room.getPlayers();
+Social.prototype.getOutputToActorTargetMissing = function() {
+    var output = new Output(this.actor);
     
-    for (var i = 0; i < players.length; i++) {
-        var messageTarget = players[i];
+    // output.toActor = { text: this.social.targetNotFoundMessages.toActor };
+    output.toActor.push( { text: this.social.targetNotFoundMessages.toActor } );
 
-        if (messageTarget !== this.actor) {
-            messageTarget.emitMessage(message);
-        }
-    }
+    return output;
 };
 
-Social.prototype.emitSocialMessageToRoomExceptVictim = function(message) {
-    var players = this.actor.room.getPlayers();
-    
-    for (var i = 0; i < players.length; i++) {
-        var messageTarget = players[i];
+Social.prototype.getWrongPosition = function() {
+    var output = new Output(this.actor);
+    output.target = this.target;
 
-        if (messageTarget !== this.actor && messageTarget !== this.victim) {
-            messageTarget.emitMessage(message);
-        }
-    }
+    // output.toActor = { text: 'TARGET_NAME is not in a proper position for that.' };
+    output.toActor.push( { text: 'TARGET_NAME is not in a proper position for that.' } );
+    
+    return output;
 };
 
 // Exports
