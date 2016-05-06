@@ -604,26 +604,26 @@ characterSchema.methods.takeItem = function(keyword) {
 // 	return messages;
 // };
 
-// characterSchema.methods.dropObject = function(object) {
-// 	var messages = [];
+characterSchema.methods.dropObject = function(object) {
+	var messages = [];
 
-// 	this.inventory.splice(this.inventory.indexOf(object), 1);
-// 	this.room.addItem(object);
-// 	messages[0] = this.emitMessage("You drop " + object.shortDescription + ".");
-// 	messages[1] = this.emitRoomMessage(this.name + " drops " + object.shortDescription + ".");
+	this.inventory.splice(this.inventory.indexOf(object), 1);
+	this.room.addItem(object);
+	messages[0] = "You drop " + object.shortDescription + ".";
+	messages[1] = "ACTOR_NAME drops " + object.shortDescription + ".";
 	
-// 	return messages;
-// };
+	return messages;
+};
 
-// characterSchema.methods.junkObject = function(object) {
-// 	var messages = [];
+characterSchema.methods.junkObject = function(object) {
+	var messages = [];
 	
-// 	this.inventory.splice(this.inventory.indexOf(object), 1);
-// 	this.world.removeItem(object);
-// 	messages[0] = this.emitMessage("You junk " + object.shortDescription + ".");
-// 	messages[1] = this.emitRoomMessage(this.name + " junk " + object.shortDescription + ".");
-// 	return messages;
-// };
+	this.inventory.splice(this.inventory.indexOf(object), 1);
+	this.world.removeItem(object);
+	messages[0] = "You junk " + object.shortDescription + ".";
+	messages[1] = "ACTOR_NAME junks " + object.shortDescription + ".";
+	return messages;
+};
 
 // characterSchema.methods.donateObject = function(object) {
 // 	var messages = [];
@@ -652,59 +652,65 @@ characterSchema.methods.takeItem = function(keyword) {
 // 	return messages;
 // };
 
-// characterSchema.methods.dropItem = function(keyword) {
-// 	var messages  = [];
-// 	var result = this.inventory.findByKeyword(keyword);
+characterSchema.methods.dropItem = function(keyword) {
+	var output = new Output(this);
+	var result = this.inventory.findByKeyword(keyword);
 	
-// 	if(result.items.length === 0) {
-// 		messages[0] = this.emitMessage("Drop what?!?");
-// 		return messages;
-// 	}
+	if(result.items.length === 0) {
+		output.toActor.push( { text: "Drop what?!?" } );
+		return output;
+	}
 	
-// 	// TODO: Curse / NoDrop
+	// TODO: Curse / NoDrop
 
-// 	for(var i = 0; i < result.items.length; i++) {
-// 		messages.push(this.dropObject(result.items[i]));
-// 	}
+	for(var i = 0; i < result.items.length; i++) {
+		var messages = this.dropObject(result.items[i]);
+		output.toActor.push( { text: messages[0] } );
+		output.toRoom.push( { roomId: this.room.id, textArray: [ { text: messages[1] } ] } );
+	}
 	
-// 	return messages;
-// };
+	return output;
+};
 
-// characterSchema.methods.junkItem = function(keyword) {
-// 	var messages  = [];
-// 	var result = this.inventory.findByKeyword(keyword);
+characterSchema.methods.junkItem = function(keyword) {
+	var output = new Output(this);
+	var result = this.inventory.findByKeyword(keyword);
 
-// 	if(result.items.length === 0) {
-// 		messages[0] = this.emitMessage("Junk what?!?");
-// 		return messages;
-// 	}
+	if(result.items.length === 0) {
+		output.toActor.push( {  text: "Junk what?!?" } );
+		return output;
+	}
 	
-// 	for(var i = 0; i < result.items.length; i++) {
-// 		messages.push(this.junkObject(result.items[i]));
-// 	}
+	for(var i = 0; i < result.items.length; i++) {
+		var messages = this.junkObject(result.items[i]);
+		output.toActor.push( { text: messages[0] });
+		output.toRoom.push( { roomId: this.room.id, textArray: [ { text: messages[1] } ] } );
+	}
 	
-// 	return messages;
-// };
+	return output;
+};
 
 // characterSchema.methods.donateItem = function(keyword) {
-// 	var messages = [];
+// 	var output = new Output(this);
 // 	var result = this.inventory.findByKeyword(keyword);
 
 // 	if(result.items.length === 0) {
-// 		messages[0] = this.emitMessage("Donate what?!?");
-// 		return messages;
+// 		output.toActor.push( { text: "Donate what?!?" } );
+// 		return output;
 // 	}
 
 // 	for(var i = 0; i < result.items.length; i++) {
 // 		if(result.items[i].canBeDonated === true) {
-// 			messages.push(this.donateObject(result.items[i]));
+// 			var messages = this.donateObject(result.items[i]);
+// 			output.toActor.push( { text: messages[0] });
+// 			output.toRoom.push( { roomId: this.room.id, textArray: [ { text: messages[1] } ] } );
 // 		}
 // 		else {
-// 			messages.push(this.emitMessage(result.items[i].shortDescription + " can't be donated!"));
+// 			output.toActor.push( { text: result.items[i].shortDescription + " can't be donated!" } );
 // 		}
 // 	}
 	
-// 	return messages;
+// 	return output;
 // };
 
 // // characterSchema.methods.social = function(action, parameter) {

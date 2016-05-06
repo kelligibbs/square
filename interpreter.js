@@ -58,8 +58,8 @@ var COMMAND_LIST = [
           { command: "daydream" , minimumPosition: global.POS_SLEEPING, functionPointer: do_action     , minimumLevel: 0, subCommand: global.SCMD_DAYDREAM },
         //   { command: "deposit"  , minimumPosition: global.POS_RESTING , functionPointer: do_deposit    , minimumLevel: 0, subCommand: 0 },
         //   { command: "drink"    , minimumPosition: global.POS_RESTING , functionPointer: do_drink      , minimumLevel: 0, subCommand: global.SCMD_DRINK },
-        //   { command: "donate"   , minimumPosition: global.POS_RESTING , functionPointer: do_donate     , minimumLevel: 0, subCommand: 0 },
-        //   { command: "drop"     , minimumPosition: global.POS_RESTING , functionPointer: do_drop       , minimumLevel: 0, subCommand: 0 },
+          { command: "donate"   , minimumPosition: global.POS_RESTING , functionPointer: do_donate     , minimumLevel: 0, subCommand: 0 },
+          { command: "drop"     , minimumPosition: global.POS_RESTING , functionPointer: do_drop       , minimumLevel: 0, subCommand: 0 },
           { command: "drool"    , minimumPosition: global.POS_RESTING , functionPointer: do_action     , minimumLevel: 0, subCommand: global.SCMD_DROOL },
 
         //   { command: "eat"      , minimumPosition: global.POS_RESTING , functionPointer: do_eat        , minimumLevel: 0, subCommand: global.SCMD_EAT },
@@ -106,7 +106,7 @@ var COMMAND_LIST = [
           { command: "idea"     , minimumPosition: global.POS_DEAD    , functionPointer: do_submit_idea, minimumLevel: 0, subCommand: 0 },
 //           { command: "insult"   , minimumPosition: global.POS_RESTING , functionPointer: do_insult     , minimumLevel: 0, subCommand: 0 },
 
-        //   { command: "junk"     , minimumPosition: global.POS_RESTING , functionPointer: do_junk       , minimumLevel: 0, subCommand: 0 },
+          { command: "junk"     , minimumPosition: global.POS_RESTING , functionPointer: do_junk       , minimumLevel: 0, subCommand: 0 },
 
 //           { command: "kick"     , minimumPosition: global.POS_FIGHTING, functionPointer: do_kick       , minimumLevel: 0, subCommand: 0 },
           { command: "kiss"     , minimumPosition: global.POS_RESTING , functionPointer: do_action     , minimumLevel: 0, subCommand: global.SCMD_KISS },
@@ -526,41 +526,43 @@ function do_take(character, command) {
     }
 }
 
-// function do_donate(character, command) {
-//     if(command.tokens.length === 0) {
-//         character.emitMessage("Donate what?");
-//     }
-//     else if(command.tokens.length === 2 && !isNaN(command.tokens[0])) {
-//         // character.donateGold(command.tokens[0]);
-//     }    
-//     else {
-//         character.donateItem(command.tokens[0]);
-//     }
-// }
+function do_donate(character, command) {
+    if(command.tokens.length === 0) {
+        character.emitMessage("Donate what?");
+    }
+    else if(command.tokens.length === 2 && !isNaN(command.tokens[0])) {
+        // character.donateMoney(command.tokens[0]);
+    }    
+    else {
+        // character.donateItem(command.tokens[0]).emit();
+        // TODO: This
+        character.emitMessage("Not implemented.");
+    }
+}
 
-// function do_drop(character, command) {
-//     if(command.tokens.length === 0) {
-//         character.emitMessage("Drop what?");
-//     }
-//     else if(command.tokens.length === 2 && !isNaN(command.tokens[0])) {
-//         character.dropGold(command.tokens[0]);
-//     }
-//     else {
-//         character.dropItem(command.tokens[0]);
-//     }
-// }
+function do_drop(character, command) {
+    if(command.tokens.length === 0) {
+        character.emitMessage("Drop what?");
+    }
+    else if(command.tokens.length === 2 && !isNaN(command.tokens[0])) {
+        // character.dropMoney(command.tokens[0]);
+    }
+    else {
+        character.dropItem(command.tokens[0]).emit();
+    }
+}
 
-// function do_junk(character, command) {
-//     if(command.tokens.length === 0) {
-//         character.emitMessage("Junk what?");
-//     }
-//     else if(command.tokens.length === 2 && !isNaN(command.tokens[0])) {
-//         character.junkGold(command.tokens[0]);
-//     }    
-//     else {
-//         character.junkItem(command.tokens[0]);
-//     }
-// }
+function do_junk(character, command) {
+    if(command.tokens.length === 0) {
+        character.emitMessage("Junk what?");
+    }
+    else if(command.tokens.length === 2 && !isNaN(command.tokens[0])) {
+        // character.junkMoney(command.tokens[0]);
+    }    
+    else {
+        character.junkItem(command.tokens[0]);
+    }
+}
 
 // function do_eat(character, command) {
 //     if(command.tokens.length === 0) {
