@@ -131,41 +131,43 @@ playerSchema.methods.toggleShout = function(mode) {
 };
 
 playerSchema.methods.listInventory = function() {
-	var messages = [];
-	messages.push(this.emitMessage("You are carrying:"));
+	var output = new Output(this);
+	
+	output.toActor.push( { text: "You are carrying:" } );
 	
 	if(this.inventory.length === 0) {
-		messages.push(this.emitMessage("  Absolutely nothing!!!"));
+		output.toActor.push( { text : "  Absolutely nothing!!!" } );
 	}
 	else {
 		for(var i = 0; i < this.inventory.length; i++) {
-			messages.push(this.emitMessage("  " + this.inventory[i].shortDescription, "Green"));
+			output.toActor.push( { text: "  " + this.inventory[i].shortDescription, color: "Green" } );
 		}
 	}
 	
-	return messages;
+	return output;
 };
 
 playerSchema.methods.listScore = function() {
-	var messages = [];
+	var output = new Output(this);
 	
-	messages.push( { text: "You are " + this.getNameAndTitle() + "." } );
+	output.toActor.push( { text: "You are " + this.getNameAndTitle() + "." } );
 	
-	messages.push( { text: "You have " + this.money + " dollars with you and " + this.bank + " dollars in the bank." } );
+	output.toActor.push( { text: "You have " + this.money + " dollars with you and " + this.bank + " dollars in the bank." } );
 	
-	messages.push( { text: "You are " + this.getFormattedHeight() + " tall."} );
-	messages.push( { text: "You weigh " + this.weight + " pounds."} );
+	output.toActor.push( { text: "You are " + this.getFormattedHeight() + " tall."} );
+	output.toActor.push( { text: "You weigh " + this.weight + " pounds."} );
 	
 	var bmi = this.getBMI();
-	messages.push( { text: "Your BMI is " + bmi + ", which makes you " + utility.getBmiDescription(bmi) + "."} );
+	output.toActor.push( { text: "Your BMI is " + bmi + ", which makes you " + utility.getBmiDescription(bmi) + "."} );
 	
-	messages.push( { text: global.FULLNESS[this.getFullnessIndex()] } );
+	// output.toActor.push( { text: global.FULLNESS[this.getFullnessIndex()] } );
 	
-	this.emitMessages(messages);
-	return messages;
+	return output;
 };
 
 playerSchema.methods.setTitle = function(title) {
+	var output = new Output(this);
+	
 	if(title === undefined) {
 		if(this.gender === global.GENDER_MALE) {
 			this.title = "the Man";
@@ -176,8 +178,10 @@ playerSchema.methods.setTitle = function(title) {
 	}
 	else {
 		this.title = title;
-		this.emitMessage("Ok, you are now '" + this.name + " " + this.title + ".'");
+		output.toActor.push ( { text: "Ok, you are now '" + this.name + " " + this.title + ".'" } );
 	}
+	
+	return output;
 };
 
 playerSchema.methods.hourlyUpdate = function() {

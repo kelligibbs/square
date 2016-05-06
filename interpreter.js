@@ -34,7 +34,7 @@ var COMMAND_LIST = [
           { command: "bounce"   , minimumPosition: global.POS_STANDING, functionPointer: do_action     , minimumLevel: 0, subCommand: global.SCMD_BOUNCE },
           { command: "bow"      , minimumPosition: global.POS_STANDING, functionPointer: do_action     , minimumLevel: 0, subCommand: global.SCMD_BOW },
           { command: "brb"      , minimumPosition: global.POS_RESTING , functionPointer: do_action     , minimumLevel: 0, subCommand: global.SCMD_BRB },
-        //   { command: "bug"      , minimumPosition: global.POS_DEAD    , functionPointer: do_report_bug , minimumLevel: 0, subCommand: 0 },
+          { command: "bug"      , minimumPosition: global.POS_DEAD    , functionPointer: do_report_bug , minimumLevel: 0, subCommand: 0 },
           { command: "burp"     , minimumPosition: global.POS_RESTING , functionPointer: do_action     , minimumLevel: 0, subCommand: global.SCMD_BURP },
 //           { command: "buy"      , minimumPosition: global.POS_RESTING , functionPointer: do_buy        , minimumLevel: 0, subCommand: 0 },
           
@@ -102,8 +102,8 @@ var COMMAND_LIST = [
           { command: "holler"   , minimumPosition: global.POS_RESTING,  functionPointer: do_gen_comm   , minimumLevel: 0, subCommand: global.SCMD_HOLLER },
           { command: "hug"      , minimumPosition: global.POS_RESTING , functionPointer: do_action     , minimumLevel: 0, subCommand: global.SCMD_HUG },
 
-        //   { command: "inventory", minimumPosition: global.POS_DEAD    , functionPointer: do_inventory  , minimumLevel: 0, subCommand: 0 },
-        //   { command: "idea"     , minimumPosition: global.POS_DEAD    , functionPointer: do_submit_idea, minimumLevel: 0, subCommand: 0 },
+          { command: "inventory", minimumPosition: global.POS_DEAD    , functionPointer: do_inventory  , minimumLevel: 0, subCommand: 0 },
+          { command: "idea"     , minimumPosition: global.POS_DEAD    , functionPointer: do_submit_idea, minimumLevel: 0, subCommand: 0 },
 //           { command: "insult"   , minimumPosition: global.POS_RESTING , functionPointer: do_insult     , minimumLevel: 0, subCommand: 0 },
 
         //   { command: "junk"     , minimumPosition: global.POS_RESTING , functionPointer: do_junk       , minimumLevel: 0, subCommand: 0 },
@@ -155,13 +155,13 @@ var COMMAND_LIST = [
 //           { command: "remove"   , minimumPosition: global.POS_RESTING , functionPointer: do_remove     , minimumLevel: 0, subCommand: 0 },
 //           { command: "rent"     , minimumPosition: global.POS_RESTING , functionPointer: do_rent       , minimumLevel: 0, subCommand: 0 },
 //           { command: "report"   , minimumPosition: global.POS_RESTING , functionPointer: do_report     , minimumLevel: 0, subCommand: 0 },
-        //   { command: "rest"     , minimumPosition: global.POS_RESTING , functionPointer: do_rest       , minimumLevel: 0, subCommand: 0 },
+          { command: "rest"     , minimumPosition: global.POS_RESTING , functionPointer: do_rest       , minimumLevel: 0, subCommand: 0 },
           { command: "roll"     , minimumPosition: global.POS_RESTING , functionPointer: do_action     , minimumLevel: 0, subCommand: global.SCMD_ROLL },
           { command: "ruffle"   , minimumPosition: global.POS_STANDING, functionPointer: do_action     , minimumLevel: 0, subCommand: global.SCMD_RUFFLE },
 
           { command: "'"        , minimumPosition: global.POS_RESTING , functionPointer: do_say        , minimumLevel: 0, subCommand: 0 },
           { command: "say"      , minimumPosition: global.POS_RESTING , functionPointer: do_say        , minimumLevel: 0, subCommand: 0 },
-        //   { command: "score"    , minimumPosition: global.POS_DEAD    , functionPointer: do_score      , minimumLevel: 0, subCommand: 0 },
+          { command: "score"    , minimumPosition: global.POS_DEAD    , functionPointer: do_score      , minimumLevel: 0, subCommand: 0 },
           { command: "scream"   , minimumPosition: global.POS_RESTING , functionPointer: do_action     , minimumLevel: 0, subCommand: global.SCMD_SCREAM },
 //           { command: "sell"     , minimumPosition: global.POS_RESTING , functionPointer: do_sell       , minimumLevel: 0, subCommand: 0 },
           { command: "shake"    , minimumPosition: global.POS_RESTING , functionPointer: do_action     , minimumLevel: 0, subCommand: global.SCMD_SHAKE },
@@ -171,10 +171,10 @@ var COMMAND_LIST = [
           { command: "shout"    , minimumPosition: global.POS_RESTING,  functionPointer: do_gen_comm   , minimumLevel: 0, subCommand: global.SCMD_SHOUT },
 //           { command: "sing"     , minimumPosition: global.POS_RESTING , functionPointer: do_action     , minimumLevel: 0, subCommand: global.SCMD_SING },
         //   { command: "sip"      , minimumPosition: global.POS_RESTING , functionPointer: do_drink      , minimumLevel: 0, subCommand: global.SCMD_SIP },
-        //   { command: "sit"      , minimumPosition: global.POS_RESTING , functionPointer: do_sit        , minimumLevel: 0, subCommand: 0 },
+          { command: "sit"      , minimumPosition: global.POS_RESTING , functionPointer: do_sit        , minimumLevel: 0, subCommand: 0 },
           { command: "slap"     , minimumPosition: global.POS_RESTING , functionPointer: do_action     , minimumLevel: 0, subCommand: global.SCMD_SLAP },
 //           { command: "slay"     , minimumPosition: global.POS_RESTING , functionPointer: do_slay       , minimumLevel: 0, subCommand: 0 },
-        //   { command: "sleep"    , minimumPosition: global.POS_SLEEPING, functionPointer: do_sleep      , minimumLevel: 0, subCommand: 0 },
+          { command: "sleep"    , minimumPosition: global.POS_SLEEPING, functionPointer: do_sleep      , minimumLevel: 0, subCommand: 0 },
           { command: "smile"    , minimumPosition: global.POS_RESTING , functionPointer: do_action     , minimumLevel: 0, subCommand: global.SCMD_SMILE },
           { command: "smirk"    , minimumPosition: global.POS_RESTING , functionPointer: do_action     , minimumLevel: 0, subCommand: global.SCMD_SMIRK },
           { command: "snap"     , minimumPosition: global.POS_RESTING , functionPointer: do_action     , minimumLevel: 0, subCommand: global.SCMD_SNAP },
@@ -186,7 +186,7 @@ var COMMAND_LIST = [
           { command: "snuggle"  , minimumPosition: global.POS_RESTING , functionPointer: do_action     , minimumLevel: 0, subCommand: global.SCMD_SNUGGLE },
           { command: "spank"    , minimumPosition: global.POS_RESTING , functionPointer: do_action     , minimumLevel: 0, subCommand: global.SCMD_SPANK },
           { command: "spit"     , minimumPosition: global.POS_SITTING , functionPointer: do_action     , minimumLevel: 0, subCommand: global.SCMD_SPIT },
-        //   { command: "stand"    , minimumPosition: global.POS_RESTING , functionPointer: do_stand      , minimumLevel: 0, subCommand: 0 },
+          { command: "stand"    , minimumPosition: global.POS_RESTING , functionPointer: do_stand      , minimumLevel: 0, subCommand: 0 },
           { command: "stare"    , minimumPosition: global.POS_RESTING , functionPointer: do_action     , minimumLevel: 0, subCommand: global.SCMD_STARE },
           { command: "steam"    , minimumPosition: global.POS_RESTING , functionPointer: do_action     , minimumLevel: 0, subCommand: global.SCMD_STEAM },
           { command: "strut"    , minimumPosition: global.POS_STANDING, functionPointer: do_action     , minimumLevel: 0, subCommand: global.SCMD_STRUT},
@@ -202,9 +202,9 @@ var COMMAND_LIST = [
           { command: "think"    , minimumPosition: global.POS_RESTING , functionPointer: do_action     , minimumLevel: 0, subCommand: global.SCMD_THINK },
           { command: "tickle"   , minimumPosition: global.POS_RESTING , functionPointer: do_action     , minimumLevel: 0, subCommand: global.SCMD_TICKLE },
 //           { command: "time"     , minimumPosition: global.POS_DEAD    , functionPointer: do_time       , minimumLevel: 0, subCommand: 0 },
-        //   { command: "title"    , minimumPosition: global.POS_DEAD    , functionPointer: do_title      , minimumLevel: 0, subCommand: 0 },
+          { command: "title"    , minimumPosition: global.POS_DEAD    , functionPointer: do_title      , minimumLevel: 0, subCommand: 0 },
           { command: "twiddle"  , minimumPosition: global.POS_RESTING , functionPointer: do_action     , minimumLevel: 0, subCommand: global.SCMD_TWIDDLE },
-        //   { command: "typo"     , minimumPosition: global.POS_DEAD    , functionPointer: do_report_typo, minimumLevel: 0, subCommand: 0 },
+          { command: "typo"     , minimumPosition: global.POS_DEAD    , functionPointer: do_report_typo, minimumLevel: 0, subCommand: 0 },
           
 //           { command: "ungroup"  , minimumPosition: global.POS_RESTING , functionPointer: do_ungroup    , minimumLevel: 0, subCommand: 0 },
 //           { command: "unlock"   , minimumPosition: global.POS_RESTING , functionPointer: do_unlock_door, minimumLevel: 0, subCommand: 0 },
@@ -371,21 +371,21 @@ function do_exits(character, command) {
     character.room.listExits(character).emit();
 }
 
-// function do_stand(character) {
-//     character.stand();
-// }
+function do_stand(character) {
+    character.stand().emit();
+}
 
-// function do_sit(character) {
-//     character.sit();
-// }
+function do_sit(character) {
+    character.sit().emit();
+}
 
-// function do_rest(character) {
-//     character.rest();
-// }
+function do_rest(character) {
+    character.rest().emit();
+}
 
-// function do_sleep(character) {
-//     character.sleep();
-// }
+function do_sleep(character) {
+    character.sleep().emit();
+}
 
 // function do_wake(character, command) {
 //     if(command.tokens.length === 0) {
@@ -593,68 +593,75 @@ function do_gen_comm(character, command) {
 //     }
 // }
 
-// function do_score(character) {
-//     character.listScore();
-// }
+function do_score(character) {
+    character.listScore().emit();
+}
 
-// function do_inventory(character) {
-//     character.listInventory();
-// }
+function do_inventory(character) {
+    character.listInventory().emit();
+}
 
-// function do_title(character, command) {
-//     character.setTitle(command.subInput);
-// }
+function do_title(character, command) {
+    character.setTitle(command.subInput).emit();
+}
 
-// function do_report_bug(character, command) {
-//     var bugReport = command.subInput.trim();
+function do_report_bug(character, command) {
+    var bugReport = command.subInput.trim();
+    var output = new Output(character);
     
-//     if(bugReport.length === 0) {
-//         character.emitMessage("Ok, but what's the bug you want to report?");
-//     }
-//     else {
-//         var bugToSave = new bug({ reporter: character.name, message: bugReport });
+    if(bugReport.length === 0) {
+        output.toActor.push( { text: "Ok, but what's the bug you want to report?" } );
+    }
+    else {
+        var bugToSave = new bug( { reporter: character.name, message: bugReport } );
         
-//         bugToSave.save(function(err) {
-//           // TODO: Log error?
-//         });        
+        bugToSave.save(function(err) {
+          // TODO: Log error?
+        });        
         
-//         character.emitMessage("Ok. Thanks for the bug report.");
-//     }
-// }
-
-// function do_submit_idea(character, command) {
-//     var ideaReport = command.subInput.trim();
+        output.toActor.push( { text: "Ok. Thanks for the bug report." } );
+    }
     
-//     if(ideaReport.length === 0) {
-//         character.emitMessage("Ok, but what's your idea?");
-//     }
-//     else {
-//         var ideaToSave = new idea({ reporter: character.name, message: ideaReport });
-        
-//         ideaReport.save(function(err) {
-//           // TODO: Log error?
-//         });        
-        
-//         character.emitMessage("Ok. Thanks for the idea!");
-//     }
-// }
+    output.emit();
+}
 
-// function do_report_typo(character, command) {
-//     var typoReport = command.subInput.trim();
+function do_submit_idea(character, command) {
+    var ideaReport = command.subInput.trim();
+    var output = new Output(character);
     
-//     if(typoReport.length === 0) {
-//         character.emitMessage("Ok, but what's the typo you want to report?");
-//     }
-//     else {
-//         var typoToSave = new typo({ reporter: character.name, message: typoReport });
+    if(ideaReport.length === 0) {
+        output.toActor.push( { text: "Ok, but what's your idea?" } );
+    }
+    else {
+        var ideaToSave = new idea( { reporter: character.name, message: ideaReport } );
         
-//         typoToSave.save(function(err) {
-//           // TODO: Log error?
-//         });        
+        ideaToSave.save(function(err) {
+          // TODO: Log error?
+        });        
         
-//         character.emitMessage("Ok. Thanks for the report.");
-//     }
-// }
+        output.toActor.push( { text: "Ok. Thanks for the idea!" });
+    }
+    
+    output.emit();
+}
+
+function do_report_typo(character, command) {
+    var typoReport = command.subInput.trim();
+    var output = new Output(character);
+
+    if(typoReport.length === 0) {
+        output.toActor.push( { text: "Ok, but what's the typo you want to report?" } );
+    }
+    else {
+        var typoToSave = new typo( { reporter: character.name, message: typoReport } );
+        
+        typoToSave.save(function(err) {
+          // TODO: Log error?
+        });        
+        
+        output.toActor.push( { text: "Ok. Thanks for reporting the typo." } );
+    }
+}
 
 function do_emote(character, command) {
     character.emote(command.subInput.trim()).emit();
