@@ -163,169 +163,170 @@ characterSchema.methods.move = function(direction) {
 			return output;
 		}
 
-		messages[0] = this.emitRoomMessage(this.name + " leaves " + global.getDirection(direction) + ".");
-		
-		var oldRoom = this.room;
+		output = newRoom.showRoomToCharacter(this);
+		output.toRoom.push( { roomId: this.room.id, textArray: [ { text: "ACTOR_NAME leaves " + global.getDirection(direction) + "." } ] } );
+	
+		// var oldRoom = this.room;
 		
 		this.room.removeCharacter(this);
-		
 		newRoom.addCharacter(this);
-		messages[1] = this.emitRoomMessage(this.name + " has arrived.");
-		messages[2] = newRoom.showRoomToCharacter(this);
+	
+		output.toRoom.push( { roomId: newRoom.id, textArray: [ { text: "ACTOR_NAME has arrived. " } ] } );
 
-		for(var i = 0; i < this.followers.length; i++) {
-			if(this.followers[i].room === oldRoom) {
-				this.followers[i].emitMessage("You follow " + this.name + ".");
-				this.followers[i].move(direction);
-			}
+		// 	for(var i = 0; i < this.followers.length; i++) {
+		// 		if(this.followers[i].room === oldRoom) {
+		// 			this.followers[i].emitMessage("You follow " + this.name + ".");
+		// 			this.followers[i].move(direction);
+		// 		}
+		// 	}
+		 	
 		}
-	 	
-	 	return messages;
-	}
 	else {
-		this.emitMessage("Room not found -- this is a bug.");
-		this.emitMessage(global.MESSAGE_BUG);
+		output.toActor.push( { text: "Room not found -- this is a bug." } );
+		output.toActor.push( { text: global.MESSAGE_BUG } );
 	}
+	
+	return output;
 };
 
 characterSchema.methods.emote = function(parameter) {
-	var messages = [];
-	messages[0] = this.emitMessage(this.name + " " + parameter);
-	messages[1] = this.emitRoomMessage(this.name + " " + parameter);
-	return messages;
+	var output = new Output(this);
+	output.toActor.push( { text: this.name + " " + parameter } );
+	output.toRoom.push( { roomId: this.room.id, textArray: [ { text: this.name + " " + parameter } ] } );
+	return output;
 };
 
-characterSchema.methods.stand = function() {
-	var messages = [];
+// characterSchema.methods.stand = function() {
+// 	var messages = [];
 	
-	switch(this.position) {
-		case global.POS_STANDING:
-			messages[0] = this.emitMessage("You are already standing.");
-			break;
-		case global.POS_SITTING:
-			messages[0] = this.emitMessage("You stand up.");
-			messages[1] = this.emitRoomMessage(this.name + " clambers to " + this.getPossessivePronoun() + " feet.");
-			this.position = global.POS_STANDING;
-			break;
-        case global.POS_RESTING:
-            messages[0] = this.emitMessage("You stop resting, and stand up.");
-			messages[1] = this.emitRoomMessage(this.name + " stops resting, and clambers on " + this.getPossessivePronoun() + " feet.");
-            this.position = global.POS_STANDING;
-            break;
-        case global.POS_SLEEPING:
-            messages[0] = this.emitMessage("You have to wake up first!");
-            break;
-        default:
-            messages[0] = this.emitMessage("You stop floating around, and put your feet on the ground.");
-            messages[1] = this.emitRoomMessage(this.name + " stops floating around and puts " + this.getPossessivePronoun() + " feet on the ground.");
-            this.position = global.POS_STANDING;
-            break;
-	}
+// 	switch(this.position) {
+// 		case global.POS_STANDING:
+// 			messages[0] = this.emitMessage("You are already standing.");
+// 			break;
+// 		case global.POS_SITTING:
+// 			messages[0] = this.emitMessage("You stand up.");
+// 			messages[1] = this.emitRoomMessage(this.name + " clambers to " + this.getPossessivePronoun() + " feet.");
+// 			this.position = global.POS_STANDING;
+// 			break;
+//         case global.POS_RESTING:
+//             messages[0] = this.emitMessage("You stop resting, and stand up.");
+// 			messages[1] = this.emitRoomMessage(this.name + " stops resting, and clambers on " + this.getPossessivePronoun() + " feet.");
+//             this.position = global.POS_STANDING;
+//             break;
+//         case global.POS_SLEEPING:
+//             messages[0] = this.emitMessage("You have to wake up first!");
+//             break;
+//         default:
+//             messages[0] = this.emitMessage("You stop floating around, and put your feet on the ground.");
+//             messages[1] = this.emitRoomMessage(this.name + " stops floating around and puts " + this.getPossessivePronoun() + " feet on the ground.");
+//             this.position = global.POS_STANDING;
+//             break;
+// 	}
 	
-	return messages;
-};
+// 	return messages;
+// };
 
-characterSchema.methods.sit = function() {
-	var messages = [];
+// characterSchema.methods.sit = function() {
+// 	var messages = [];
 	
-	switch(this.position) {
-		case global.POS_STANDING:
-			messages[0] = this.emitMessage("You sit down.");
-			messages[1] = this.emitRoomMessage(this.name + " sits down.");
-			this.position = global.POS_SITTING;
-			break;
-		case global.POS_SITTING:
-			messages[0] = this.emitMessage("You're sitting already.");
-			break;
-        case global.POS_RESTING:
-            messages[0] = this.emitMessage("You stop resting, and sit up.");
-            messages[1] = this.emitRoomMessage(this.name + " stops resting.");
-            this.position = global.POS_SITTING;
-            break;
-        case global.POS_SLEEPING:
-            messages[0] = this.emitMessage("You have to wake up first.");
-            break;
-        default:
-            messages[0] = this.emitMessage("You stop floating around, and sit down.");
-            messages[1] = this.emitRoomMessage(this.name + " stops floating around, and sit down.");
-            this.position = global.POS_SITTING;
-            break;
-	}
+// 	switch(this.position) {
+// 		case global.POS_STANDING:
+// 			messages[0] = this.emitMessage("You sit down.");
+// 			messages[1] = this.emitRoomMessage(this.name + " sits down.");
+// 			this.position = global.POS_SITTING;
+// 			break;
+// 		case global.POS_SITTING:
+// 			messages[0] = this.emitMessage("You're sitting already.");
+// 			break;
+//         case global.POS_RESTING:
+//             messages[0] = this.emitMessage("You stop resting, and sit up.");
+//             messages[1] = this.emitRoomMessage(this.name + " stops resting.");
+//             this.position = global.POS_SITTING;
+//             break;
+//         case global.POS_SLEEPING:
+//             messages[0] = this.emitMessage("You have to wake up first.");
+//             break;
+//         default:
+//             messages[0] = this.emitMessage("You stop floating around, and sit down.");
+//             messages[1] = this.emitRoomMessage(this.name + " stops floating around, and sit down.");
+//             this.position = global.POS_SITTING;
+//             break;
+// 	}
 	
-	return messages;
-};
+// 	return messages;
+// };
 
-characterSchema.methods.rest = function() {
-	var messages = [];
+// characterSchema.methods.rest = function() {
+// 	var messages = [];
 	
-	switch(this.position) {
-		case global.POS_STANDING:
-			messages[0] = this.emitMessage("You sit down and rest your tired bones.");
-			messages[1] = this.emitRoomMessage(this.name + " sits down and rests.");
-			this.position = global.POS_RESTING;
-			break;
-		case global.POS_SITTING:
-			messages[0] = this.emitMessage("You rest your tired bones.");
-			messages[1] = this.emitMessage(this.name + " rests.");
-			this.position = global.POS_RESTING;
-			break;
-        case global.POS_RESTING:
-            messages[0] = this.emitMessage("You are resting already.");
-            break;
-        case global.POS_SLEEPING:
-            messages[0] = this.emitMessage("You have to wake up first.");
-            break;
-        default:
-            this.emitMessage("You stop floating around, and stop to rest your tired bones.");
-            this.emitRoomMessage(this.name + " stops floating around, and rests.");
-            this.position = global.POS_RESTING;
-            break;
-	}
+// 	switch(this.position) {
+// 		case global.POS_STANDING:
+// 			messages[0] = this.emitMessage("You sit down and rest your tired bones.");
+// 			messages[1] = this.emitRoomMessage(this.name + " sits down and rests.");
+// 			this.position = global.POS_RESTING;
+// 			break;
+// 		case global.POS_SITTING:
+// 			messages[0] = this.emitMessage("You rest your tired bones.");
+// 			messages[1] = this.emitMessage(this.name + " rests.");
+// 			this.position = global.POS_RESTING;
+// 			break;
+//         case global.POS_RESTING:
+//             messages[0] = this.emitMessage("You are resting already.");
+//             break;
+//         case global.POS_SLEEPING:
+//             messages[0] = this.emitMessage("You have to wake up first.");
+//             break;
+//         default:
+//             this.emitMessage("You stop floating around, and stop to rest your tired bones.");
+//             this.emitRoomMessage(this.name + " stops floating around, and rests.");
+//             this.position = global.POS_RESTING;
+//             break;
+// 	}
 	
-	return messages;
-};
+// 	return messages;
+// };
 
-characterSchema.methods.sleep = function() {
-	var messages = [];
+// characterSchema.methods.sleep = function() {
+// 	var messages = [];
 	
-	switch(this.position) {
-	    case global.POS_STANDING:
-	    case global.POS_SITTING:
-	    case global.POS_RESTING:
-	        messages[0] = this.emitMessage("You go to sleep.");
-	        messages[1] = this.emitRoomMessage(this.name + " lies down and falls asleep.");
-	        this.position = global.POS_SLEEPING;
-	        break;
-        case global.POS_SLEEPING:
-            messages[0] = this.emitMessage("You are already sound asleep.");
-            break;
-        default:
-            messages[0] = this.emitMessage("You stop floating around, and lie down to sleep.");
-            messages[1] = this.emitRoomMessage(this.name + " stops floating around, and lie down to sleep.");
-            this.position = global.POS_SLEEPING;
-            break;
-    }
+// 	switch(this.position) {
+// 	    case global.POS_STANDING:
+// 	    case global.POS_SITTING:
+// 	    case global.POS_RESTING:
+// 	        messages[0] = this.emitMessage("You go to sleep.");
+// 	        messages[1] = this.emitRoomMessage(this.name + " lies down and falls asleep.");
+// 	        this.position = global.POS_SLEEPING;
+// 	        break;
+//         case global.POS_SLEEPING:
+//             messages[0] = this.emitMessage("You are already sound asleep.");
+//             break;
+//         default:
+//             messages[0] = this.emitMessage("You stop floating around, and lie down to sleep.");
+//             messages[1] = this.emitRoomMessage(this.name + " stops floating around, and lie down to sleep.");
+//             this.position = global.POS_SLEEPING;
+//             break;
+//     }
     
-	return messages;    
-};
+// 	return messages;    
+// };
 
-characterSchema.methods.wake = function() {
-	var messages = [];
+// characterSchema.methods.wake = function() {
+// 	var messages = [];
 	
-	if(this.position > global.POS_SLEEPING) {
-		messages[0] = this.emitMessage("You are already awake...");
-	}
-	else if(this.position < global.POS_SLEEPING) {
-		messages[0] = this.emitMessage("You can't wake up! You're in pretty bad shape!");
-	}
-	else {
-		messages[0] = this.emitMessage("You awaken, and sit up.");
-		messages[1] = this.emitRoomMessage(this.name + " awakens.");
-		this.position = global.POS_SITTING;
-	}
+// 	if(this.position > global.POS_SLEEPING) {
+// 		messages[0] = this.emitMessage("You are already awake...");
+// 	}
+// 	else if(this.position < global.POS_SLEEPING) {
+// 		messages[0] = this.emitMessage("You can't wake up! You're in pretty bad shape!");
+// 	}
+// 	else {
+// 		messages[0] = this.emitMessage("You awaken, and sit up.");
+// 		messages[1] = this.emitRoomMessage(this.name + " awakens.");
+// 		this.position = global.POS_SITTING;
+// 	}
 	
-	return messages;    
-};
+// 	return messages;    
+// };
 
 characterSchema.methods.say = function(message) {
 	var output = new Output(this);
@@ -334,7 +335,7 @@ characterSchema.methods.say = function(message) {
 		output.toActor.push( { text: "Yes, but WHAT do you want to say?" } );
 	} else {
 		output.toActor.push( { text: "You say, '" + message + "'" } );
-		output.toRoom.push( { text: "ACTOR_NAME says, '" + message + "'" } );
+		output.toRoom.push( { roomId: this.room.id, textArray: [ { text: "ACTOR_NAME says, '" + message + "'" } ] } );
 	}
 
 	return output;

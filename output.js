@@ -40,10 +40,6 @@ Output.prototype.emit = function() {
 
     result.push(this.emitToRoom());
     
-    if(this.toRoom.length > 0) {
-        result.push(this.emitToRoom());
-    }
-
     if(this.toWorld.length > 0) {
         result.push(this.emitToWorld());
     }
@@ -70,14 +66,15 @@ Output.prototype.emitToTarget = function() {
 };
 
 Output.prototype.emitToRoom = function() {
-    if(this.actor.room !== undefined) {
-        var players = this.actor.room.getPlayers();
+    for(var i = 0; i < this.toRoom.length; i++) {
+        var room = this.actor.world.getRoom(this.toRoom[i].roomId);
+        var players = room.getPlayers();
 
-        for (var i = 0; i < players.length; i++) {
-            var textTarget = players[i];
-            
+        for (var j = 0; j < players.length; j++) {
+            var textTarget = players[j];
+        
             if (textTarget !== this.actor && textTarget !== this.target) {
-                this.__emit(textTarget, this.toRoom);
+                this.__emit(textTarget, this.toRoom[i].textArray);
             }
         }
     }

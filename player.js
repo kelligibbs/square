@@ -35,7 +35,7 @@ playerSchema.methods.enterGame = function(world) {
 	this.position = global.POS_STANDING;
 	
 	var output = room.showRoomToCharacter(this);
-	output.toRoom.push( { text: this.name + " has entered the game." } );
+	output.toRoom.push( { roomId: room.id, textArray: [ { text: this.name + " has entered the game." } ] } );
 	output.emit();
 
 	this.keywords = [];
@@ -74,6 +74,10 @@ playerSchema.methods.isNpc = function() {
 playerSchema.methods.getNameAndTitle = function() {
 	var result = this.name + " " + this.title;
 	return result.trim();
+};
+
+playerSchema.methods.getDescription = function() { 
+	return this.name + " " + this.title;
 };
 
 playerSchema.methods.toggle = function(mode, property, trueMessage, falseMessage) {

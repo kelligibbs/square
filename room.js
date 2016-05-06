@@ -249,7 +249,6 @@ roomSchema.methods.showRoomToCharacter = function(character) {
  		output.toActor.push( { text: this.contents[i].longDescription, color: 'Green' } );
  	}
 
-	// character.emitMessages(description);
 	return output;
 };
 
