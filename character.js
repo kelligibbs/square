@@ -751,7 +751,7 @@ characterSchema.methods.eatItem = function(keyword) {
 		return output;
 	}
 
-	var beforeFullnessIndex = this.getFullnessIndex();
+	var fullnessIndex = 0;
 
 	for(var i = 0; i < result.items.length; i++) {
 		if(result.items[i].type !== global.ITEM_FOOD) {
@@ -760,123 +760,23 @@ characterSchema.methods.eatItem = function(keyword) {
 		else {
 			var messages = this.eatObject(result.items[i]);
 			output.toActor.push( { text: messages[0] } );
+			
+			fullnessIndex = this.getFullnessIndex();
+			var fullnessMessages = global.FULLNESS[ fullnessIndex ];
+
+			output.toActor.push( { text: fullnessMessages[0] } );
 			output.toRoom.push( { roomId: this.room.id, textArray: [ { text: messages[1] } ] } );
+			output.toRoom.push( { roomId: this.room.id, textArray: [ { text: fullnessMessages[1] } ] } );
 		}
 	}
 	
-	var afterFullnessIndex = this.getFullnessIndex();
-	
-	var fullnessMessages = this.updateFullness(beforeFullnessIndex, afterFullnessIndex);
-	
-	if(fullnessMessages.length > 0) {
-		output.toActor.push( { text: fullnessMessages[0] } );
-		output.toRoom.push( { roomId: this.room.id, textArray: [ { text: fullnessMessages[1] } ] } );		
+	if(fullnessIndex >= global.MAX_FULLNESS) {
+		this.position = global.POS_SLEEPING;
 	}
-
+	
 	return output;
 };
 
-characterSchema.methods.updateFullness = function(beforeFullnessIndex, afterFullnessIndex) {
-	// var messages = [];
-	
-	// if(beforeFullnessIndex < 6.0 && afterFullnessIndex > 6.0) {
-	// 	this.maximumFullness++;
-	// 	// TODO: Pass out
-	// }
-	
-	
-	// if(beforeFullnessIndex < 0.5 && afterFullnessIndex > 0.5) {
-	// 	this.fullnessLevel = global.FULLNESS_SATISFIED;
-		
-	// 	this.emitMessage("You feel satisfied.");
-		
-	// 	return;
-	// }
-	
-	// if(fullnessIndex > 1.1 && this.fullnessLevel < global.FULLNESS_FULL) {
-	// 	this.fullnessLevel = global.FULLNESS_FULL;
-
-	// 	this.emitMessage("You feel full.");
-	// 	return;
-	// }
-	
-	// if(fullnessIndex > 1.3 && this.fullnessLevel < global.FULLNESS_VERYFULL) {
-	// 	this.fullnessLevel = global.FULLNESS_VERYFULL;
-		
-	// 	this.emitMessage("You feel VERY full.");
-	// 	return;
-	// }
-
-	// if(fullnessIndex > 1.6 && this.fullnessLevel < global.FULLNESS_EXTREMELYFULL) {
-	// 	this.fullnessLevel = global.FULLNESS_EXTREMELYFULL;
-		
-	// 	// extremely full
-	// 	return;
-	// }
-	
-	
-	// if(fullnessIndex > 2.0 && this.fullnessLevel < global.FULLNESS_STUFFED) {
-	// 	this.fullnessLevel = global.FULLNESS_STUFFED;
-		
-	// 	this.maximumFullness++;
-	// 	return;
-	// }
-	
-	// if(fullnessIndex > 2.5 && this.fullnessLevel < global.FULLNESS_INSANELYSTUFFED) {
-	// 	this.fullnessLevel = global.FULLNESS_INSANELYSTUFFED;
-		
-	// 	return;
-	// }
-	
-	// if(fullnessIndex > 3.0 && this.fullnessLevel < global.FULLNESS_MAXIMUMFULL) {
-	// 	this.fullnessLevel = global.FULLNESS_MAXIMUMFULL;
-		
-	// 	return;
-	// }
-	
-	// if(fullnessIndex > 3.3 && this.fullnessLevel < global.FULLNESS_OVERMAXIMUM) {
-	// 	this.fullnessLevel = global.FULLNESS_OVERMAXIMUM;
-		
-	// 	return;
-	// }
-	
-	// if(fullnessIndex > 3.6 && this.fullnessLevel < global.FULLNESS_SWEATING) {
-	// 	this.fullnessLevel = global.FULLNESS_SWEATING;
-		
-	// 	return;
-	// }
-	
-	// if(fullnessIndex > 4.0 && this.fullnessLevel < global.FULLNESS_SHORTBREATH) {
-	// 	this.fullnessLevel = global.FULLNESS_SHORTBREATH;
-		
-	// 	return;
-	// }
-
-	
-	// if(fullnessIndex > 4.5 && this.fullnessLevel < global.FULLNESS_PANIC) {
-	// 	this.fullnessLevel = global.FULLNESS_PANIC;
-		
-	// 	return;
-	// }	
-
-	// if(fullnessIndex > 5.0 && this.fullnessLevel < global.FULLNESS_HALLUCINATING) {
-	// 	this.fullnessLevel = global.FULLNESS_HALLUCINATING;
-		
-	// 	return;
-	// }	
-	
-	// if(fullnessIndex > 5.5 && this.fullnessLevel < global.FULLNESS_READYTOPOP) {
-	// 	this.fullnessLevel = global.FULLNESS_READYTOPOP;
-		
-	// 	return;
-	// }
-
-	// if(fullnessIndex > 6.0 && this.fullnessLevel < global.FULLNESS_PASSEDOUT) {
-	// 	this.fullnessLevel = global.FULLNESS_PASSEDOUT;
-		
-	// 	return;
-	// }	
-};
 
 // characterSchema.methods.drinkFromObject = function(object, mode) {
 // 	var messages = [];

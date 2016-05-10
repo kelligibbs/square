@@ -220,38 +220,44 @@ global.DRINKS = [
 ];
 
 global.FULLNESS = [
-	"You are starving.",
-	"You are satisfied.",
-	"You are full.",
-	"You are very full.",
-	"You are EXTREMELY full.",
-	"You are completely STUFFED.",
-	"You are INSANELY STUFFED!",
-	"You are at your maximum fullness!",
-	"You are BEYOND your maximum fullness!!",
-	"You are completely overstuffed and sweating!!!",
-	"You are so full that you can HARDLY BREATHE!!!!",
-	"You are so completely STUFFED that you're about to PANIC!!!!!",
-	"You are so stuffed that you're hallucinating!!!!",
-	"You feel like your stomach is about to explode!!!!!",
-	"You have passed out from being so S-T-U-F-F-E-D!!!!!!"
+	[ "You are starving.", "ACTOR_NAME looks extremely hungry." ], 
+	[ "You are satisfied.", "ACTOR_NAME looks satisfied." ], 
+	[ "You are full.", "ACTOR_NAME looks full." ], 
+	[ "You are very full.", "ACTOR_NAME looks very full." ], 
+	[ "You are extremely full.", "ACTOR_NAME looks extremely full." ], 
+	[ "You are uncomfortably full!", "ACTOR_NAME looks uncomfortably full!" ], 
+	[ "You are absurdly full -- your belly hurts!", "ACTOR_NAME appears to have a bellyache!" ], 
+	[ "You are completely STUFFED.", "ACTOR_NAME looks completely STUFFED." ], 
+	[ "You are INSANELY STUFFED!", "ACTOR_NAME looks INSANE STUFFED." ], 
+	[ "You are at your maximum fullness!", "ACTOR_NAME appears to have reached ACTOR_PRONOUN_POSSESSIVE maximum fullness!" ], 
+	[ "You are BEYOND your maximum fullness!!", "ACTOR_NAME appears stuffed BEYOND ACTOR_PRONOUN_POSSESSIVE maximum fullness!" ], 
+	[ "You are completely overstuffed and sweating!!!", "ACTOR_NAME looks overstuffed and starts sweating!!!" ], 
+	[ "You are so full that you can HARDLY BREATHE!!!!", "ACTOR_NAME looks so full ACTOR_PRONOUN_SUBJECT can HARDLY BREATE!!!!" ], 
+	[ "You are so completely STUFFED that you're about to PANIC!!!!!",  "ACTOR_NAME looks completely STUFFED!!!!!" ], 
+	[ "You are so stuffed that you're hallucinating!!!!", "ACTOR_NAME looks insanely stuffed and has a vacant stare on ACTOR_PRONOUN_POSSESSIVE face!!!!" ], 
+	[ "You feel like your stomach is about to explode!!!!!", "ACTOR_NAME looks like ACTOR_PRONOUN_SUBJECT might explode!!!!!" ], 
+	[ "You have passed out from being so S-T-U-F-F-E-D!!!!!!", "ACTOR_NAME's eyes roll backwards and ACTOR_PRONOUN_SUBJECT passes out from being so S-T-U-F-F-E-D!!!!!!" ]
 ];
 
-global.FULLNESS_EMPTY           = 0;
-global.FULLNESS_SATISFIED       = 1;
-global.FULLNESS_FULL            = 2;
-global.FULLNESS_VERYFULL        = 3;
-global.FULLNESS_EXTREMELYFULL   = 4;
-global.FULLNESS_STUFFED         = 5;
-global.FULLNESS_INSANELYSTUFFED = 6;
-global.FULLNESS_MAXIMUMFULL     = 7;
-global.FULLNESS_OVERMAXIMUM     = 8;
-global.FULLNESS_SWEATING        = 9;
-global.FULLNESS_SHORTBREATH     = 10;
-global.FULLNESS_PANIC           = 11;
-global.FULLNESS_HALLUCINATING   = 12;
-global.FULLNESS_READYTOPOP      = 13;
-global.FULLNESS_PASSEDOUT       = 14;
+global.MAX_FULLNESS = 15;
+
+// global.FULLNESS_STARVING        = -1;
+// global.FULLNESS_SATISFIED       = 0;
+// global.FULLNESS_FULL            = 1;
+// global.FULLNESS_VERYFULL        = 2;
+// global.FULLNESS_EXTREMELYFULL   = 3;
+// global.FULLNESS_UNCOMFORTABLE   = 4;
+// global.FULLNESS_ABSURD          = 5;
+// global.FULLNESS_STUFFED         = 6;
+// global.FULLNESS_INSANELYSTUFFED = 7;
+// global.FULLNESS_MAXIMUMFULL     = 8;
+// global.FULLNESS_OVERMAXIMUM     = 9;
+// global.FULLNESS_SWEATING        = 10;
+// global.FULLNESS_SHORTBREATH     = 11;
+// global.FULLNESS_PANIC           = 12;
+// global.FULLNESS_HALLUCINATING   = 13;
+// global.FULLNESS_READYTOPOP      = 14;
+// global.FULLNESS_PASSEDOUT       = 15;
 
 global.SOCIALS = [
     { social: "accuse", 

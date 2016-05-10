@@ -56,7 +56,7 @@ playerSchema.methods.start = function() {
 		this.weight = utility.randomNumber(100, 140);
 	}
 	
-	this.maximumFullness = 3000;
+	this.maximumFullness = 2000;
 	this.caloriesConsumed = [ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 ];
 	this.experience = 1;
 	
@@ -158,7 +158,7 @@ playerSchema.methods.listScore = function() {
 	var bmi = this.getBMI();
 	output.toActor.push( { text: "Your BMI is " + bmi + ", which makes you " + utility.getBmiDescription(bmi) + "."} );
 	
-	// output.toActor.push( { text: global.FULLNESS[this.getFullnessIndex()] } );
+	output.toActor.push( { text: global.FULLNESS[this.getFullnessIndex()][0] } );
 	
 	return output;
 };
@@ -217,8 +217,9 @@ playerSchema.methods.getFullnessIndex = function() {
 	var sum = this.caloriesConsumed.total();
 	console.log(this.maximumFullness);
 	
-	var index = sum / this.maximumFullness;
-	console.log(index);
+	var index = Math.round((sum - this.maximumFullness) / (Math.round(this.maximumFullness / 4)));
+	
+	index = Math.min(index, global.MAX_FULLNESS);
 	return index;
 };
 
