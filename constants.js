@@ -20,6 +20,7 @@ global.CATEGORY_ITEM   = 2;
 global.CATEGORY_EXTRA  = 3;
 
 global.START_ROOM    = 3001;
+global.DONATION_ROOM = 3063;
 
 global.PULSE_NPC      = 10;   // 10 real seconds
 global.PULSE_MUD_HOUR = 20;
