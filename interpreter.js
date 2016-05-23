@@ -82,7 +82,7 @@ var COMMAND_LIST = [
           { command: "gasp"     , minimumPosition: global.POS_RESTING , functionPointer: do_action     , minimumLevel: 0, subCommand: global.SCMD_GASP },
           { command: "get"      , minimumPosition: global.POS_RESTING , functionPointer: do_take       , minimumLevel: 0, subCommand: 0 },          
           { command: "giggle"   , minimumPosition: global.POS_RESTING , functionPointer: do_action     , minimumLevel: 0, subCommand: global.SCMD_GIGGLE },
-//           { command: "give"     , minimumPosition: global.POS_RESTING , functionPointer: do_give       , minimumLevel: 0, subCommand: 0 },
+        //   { command: "give"     , minimumPosition: global.POS_RESTING , functionPointer: do_give       , minimumLevel: 0, subCommand: 0 },
           { command: "glare"    , minimumPosition: global.POS_RESTING,  functionPointer: do_action     , minimumLevel: 0, subCommand: global.SCMD_GLARE },
 //           { command: "gold"     , minimumPosition: global.POS_SLEEPING, functionPointer: do_gold       , minimumLevel: 0, subCommand: 0 },
           { command: "gossip"   , minimumPosition: global.POS_SLEEPING, functionPointer: do_gen_comm   , minimumLevel: 0, subCommand: global.SCMD_GOSSIP },
@@ -537,9 +537,7 @@ function do_donate(character, command) {
         // character.donateMoney(command.tokens[0]);
     }    
     else {
-        // character.donateItem(command.tokens[0]).emit();
-        // TODO: This
-        character.emitMessage("Not implemented.");
+        character.donateItem(command.tokens[0]).emit();
     }
 }
 

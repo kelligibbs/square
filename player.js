@@ -49,11 +49,11 @@ playerSchema.methods.enterGame = function(world) {
 playerSchema.methods.start = function() {
 	if(this.gender === global.GENDER_MALE) {
 		this.height = utility.randomNumber(64, 80);
-		this.weight = utility.randomNumber(120, 170);
+		this.weight = utility.randomNumber(100, 150);
 	}
 	else {
 		this.height = utility.randomNumber(60, 72);
-		this.weight = utility.randomNumber(100, 140);
+		this.weight = utility.randomNumber(90, 110);
 	}
 	
 	this.maximumFullness = 1200;
@@ -157,7 +157,7 @@ playerSchema.methods.listScore = function() {
 	
 	var bmi = this.getBMI();
 	output.toActor.push( { text: "Your BMI is " + bmi + ", which makes you " + utility.getBmiDescription(bmi) + "."} );
-	
+
 	output.toActor.push( { text: global.FULLNESS[this.getFullnessIndex()][0] } );
 	
 	return output;
@@ -212,6 +212,9 @@ playerSchema.methods.hourlyUpdate = function() {
 	// 	}
 	// }
 	
+	if(this.caloriesConsumed.total() > 3 * this.maximumFullness) {
+		this.maximumFullness++;
+	}
 };
 
 playerSchema.methods.dailyUpdate = function() {
@@ -225,10 +228,7 @@ playerSchema.methods.dailyUpdate = function() {
 
 playerSchema.methods.getFullnessIndex = function() {
 	var sum = this.caloriesConsumed.total();
-	console.log(this.maximumFullness);
-	
-	var index = Math.round((sum - this.maximumFullness) / (Math.round(this.maximumFullness / 4)));
-	
+	var index = Math.round(Math.max(0, (sum - this.maximumFullness)) / (Math.round(this.maximumFullness / 4)));
 	index = Math.min(index, global.MAX_FULLNESS);
 	return index;
 };

@@ -239,10 +239,10 @@ global.FULLNESS = [
 	[ "You are so completely STUFFED that you're about to PANIC!!!!!",  "ACTOR_NAME looks completely STUFFED!!!!!" ], 
 	[ "You are so stuffed that you're hallucinating!!!!", "ACTOR_NAME looks insanely stuffed and has a vacant stare on ACTOR_PRONOUN_POSSESSIVE face!!!!" ], 
 	[ "You feel like your stomach is about to explode!!!!!", "ACTOR_NAME looks like ACTOR_PRONOUN_SUBJECT might explode!!!!!" ], 
-	[ "You have passed out from being so S-T-U-F-F-E-D!!!!!!", "ACTOR_NAME's eyes roll backwards and ACTOR_PRONOUN_SUBJECT passes out from being so S-T-U-F-F-E-D!!!!!!" ]
+	[ "You have passed out from being so S-T-U-F-F-E-D!!!!!!", "ACTOR_NAME's has passed out from being so S-T-U-F-F-E-D!!!!!!" ]
 ];
 
-global.MAX_FULLNESS = 15;
+global.MAX_FULLNESS = 16;
 
 // global.FULLNESS_STARVING        = -1;
 // global.FULLNESS_SATISFIED       = 0;

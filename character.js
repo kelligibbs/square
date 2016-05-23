@@ -626,32 +626,25 @@ characterSchema.methods.junkObject = function(object) {
 	return messages;
 };
 
-// characterSchema.methods.donateObject = function(object) {
-// 	var messages = [];
+// TODO: What if the item isn't visible by an observer?  Invisible ring?
+
+characterSchema.methods.donateObject = function(object) {
+	var messages = [];
 	
-// 	this.inventory.splice(this.inventory.indexOf(object), 1);
+	this.inventory.splice(this.inventory.indexOf(object), 1);
+	messages[0] = "You donate " + object.shortDescription + ".\n\rIt vanishes in a puff of smoke!";
+	messages[1] = "ACTOR_NAME donates " + object.shortDescription + ".\n\rIt vanishes in a puff of smoke!";
+
+	var donationRoom = this.world.getRoom(global.DONATION_ROOM);
 	
-// 	messages[0] = [];
-// 	messages[0].push( { text: "You donate " + object.shortDescription + "." } );
-// 	messages[0].push( { text: "It vanishes in a puff of smoke!" } );
-// 	this.emitMessages(messages[0]);
-	
-// 	messages[1] = [];
-// 	messages[1].push( { text: this.name + " donates " + object.shortDescription + "." } );
-// 	messages[1].push( { text: "It vanishes in a puff of smoke!" } );
-// 	this.emitRoomMessages(messages[1]);
-	
-// 	var donationRoom = this.world.getRoom(global.DONATION_ROOM);
-	
-// 	if(donationRoom !== null) {
-// 		donationRoom.addItem(object);
+	if(donationRoom !== null) {
+		donationRoom.addItem(object);
 		
-// 		messages[2] = object.shortDescription + " appears in a puff of smoke!";
-// 		donationRoom.emitMessage(messages[2]);
-// 	}
+		messages[2] = object.shortDescription + " appears in a puff of smoke!";
+	}
 	
-// 	return messages;
-// };
+	return messages;
+};
 
 characterSchema.methods.dropItem = function(keyword) {
 	var output = new Output(this);
@@ -691,28 +684,29 @@ characterSchema.methods.junkItem = function(keyword) {
 	return output;
 };
 
-// characterSchema.methods.donateItem = function(keyword) {
-// 	var output = new Output(this);
-// 	var result = this.inventory.findByKeyword(keyword);
+characterSchema.methods.donateItem = function(keyword) {
+	var output = new Output(this);
+	var result = this.inventory.findByKeyword(keyword);
 
-// 	if(result.items.length === 0) {
-// 		output.toActor.push( { text: "Donate what?!?" } );
-// 		return output;
-// 	}
+	if(result.items.length === 0) {
+		output.toActor.push( { text: "Donate what?!?" } );
+		return output;
+	}
 
-// 	for(var i = 0; i < result.items.length; i++) {
-// 		if(result.items[i].canBeDonated === true) {
-// 			var messages = this.donateObject(result.items[i]);
-// 			output.toActor.push( { text: messages[0] });
-// 			output.toRoom.push( { roomId: this.room.id, textArray: [ { text: messages[1] } ] } );
-// 		}
-// 		else {
-// 			output.toActor.push( { text: result.items[i].shortDescription + " can't be donated!" } );
-// 		}
-// 	}
+	for(var i = 0; i < result.items.length; i++) {
+		if(result.items[i].canBeDonated === true) {
+			var messages = this.donateObject(result.items[i]);
+			output.toActor.push( { text: messages[0] });
+			output.toRoom.push( { roomId: this.room.id, textArray: [ { text: messages[1] } ] } );
+			output.toRoom.push( { roomId: global.DONATION_ROOM, textArray: [ { text: messages[2] } ] } );
+		}
+		else {
+			output.toActor.push( { text: result.items[i].shortDescription + " can't be donated!" } );
+		}
+	}
 	
-// 	return output;
-// };
+	return output;
+};
 
 // // characterSchema.methods.social = function(action, parameter) {
 // // 	var thisSocial = new Social(action, parameter, this);
@@ -764,9 +758,11 @@ characterSchema.methods.eatItem = function(keyword) {
 			fullnessIndex = this.getFullnessIndex();
 			var fullnessMessages = global.FULLNESS[ fullnessIndex ];
 
-			output.toActor.push( { text: fullnessMessages[0] } );
-			output.toRoom.push( { roomId: this.room.id, textArray: [ { text: messages[1] } ] } );
-			output.toRoom.push( { roomId: this.room.id, textArray: [ { text: fullnessMessages[1] } ] } );
+			if(fullnessMessages != undefined) {
+				output.toActor.push( { text: fullnessMessages[0] } );
+				output.toRoom.push( { roomId: this.room.id, textArray: [ { text: messages[1] } ] } );
+				output.toRoom.push( { roomId: this.room.id, textArray: [ { text: fullnessMessages[1] } ] } );
+			}
 		}
 	}
 	
