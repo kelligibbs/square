@@ -26,6 +26,8 @@ global.PULSE_MUD_HOUR = 20;
 
 global.HOURLY_DOLLAR_BONUS = 100;
 
+global.CALORIES_TO_GAIN_ONE_POUND = 2000;
+
 global.SCMD_NORTH	= "N";
 global.SCMD_EAST	= "E";
 global.SCMD_SOUTH	= "S";

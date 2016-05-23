@@ -9,8 +9,7 @@ function World() {
  	this.items = [];
 	this.zones = [];
 // 	this.shops = [];
-//  	this.time = null;
-// 	this.weather = null;
+	this.stardate = null;
 }
 
 // // Public Properties
@@ -20,8 +19,7 @@ World.prototype.npcs;
 World.prototype.zones;
 World.prototype.shops;
 World.prototype.items;
-World.prototype.time;
-// World.prototype.weather;
+World.prototype.stardate;
 
 
 World.prototype.getRoom = function(id) {
@@ -182,22 +180,17 @@ World.prototype.updateNPCs = function() {
 };
 
 World.prototype.hourElapsed = function() {
-	// this.time.advanceHour();
-	// this.time.save(function(err) {
-	// 	if(err !== null) {
-	// 		// mudlog.error(err);
-	// 		// TODO: Handle error
-	// 	}
- //   });
+    this.stardate.advanceHour();
+    this.stardate.save(function(err) {
+    	console.log(err);
+    });
     
-	// TODO: Weather
-//     this.weather.update(this.time.month);
-//     this.weather.save(function(err) {
-//     	if(err !== null) {
-//     		mudlog.error(err);
-//     	}
-//     });
-	
+    if(this.stardate % 1 === 0) {
+		for(var i = 0; i < this.players.length; i++) {
+			this.players[i].dailyUpdate();
+		}
+    }
+    
 	for(var i = 0; i < this.players.length; i++) {
 		this.players[i].hourlyUpdate();
 	}

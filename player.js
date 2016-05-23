@@ -56,8 +56,8 @@ playerSchema.methods.start = function() {
 		this.weight = utility.randomNumber(100, 140);
 	}
 	
-	this.maximumFullness = 2000;
-	this.caloriesConsumed = [ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 ];
+	this.maximumFullness = 1200;
+	this.caloriesConsumed = [ 0,0,0,0,0,0,0,0,0,0 ];
 	this.experience = 1;
 	
 	this.money = 10000;
@@ -183,6 +183,8 @@ playerSchema.methods.setTitle = function(title) {
 };
 
 playerSchema.methods.hourlyUpdate = function() {
+	this.emitMessage("Hour....");
+	
 	this.bank = this.bank + global.HOURLY_DOLLAR_BONUS;
 
 	this.caloriesConsumed.pop();
@@ -210,7 +212,15 @@ playerSchema.methods.hourlyUpdate = function() {
 	// 	}
 	// }
 	
+};
 
+playerSchema.methods.dailyUpdate = function() {
+	this.emitMessage("Day....");
+	
+	if(this.caloriesConsumed.total() > global.CALORIES_TO_GAIN_ONE_POUND) {
+		this.weight++;
+	}
+	
 };
 
 playerSchema.methods.getFullnessIndex = function() {

@@ -10,6 +10,7 @@ var room = require('./room');
 var zone = require('./zone');
 var food = require('./food');
 var interpreter = require('./interpreter');
+var stardate = require('./stardate');
 
 // TODO: Room
 // TODO: Zone
@@ -30,6 +31,11 @@ http.createServer(app).listen(app.get('port'), function() {
 });
 
 var gameWorld = new world();
+
+stardate.load(function(date) {
+    console.log('stardate:' + date);
+    gameWorld.stardate = date[0];
+});
 
 room.load(function(roomDocs) {
     gameWorld.rooms = roomDocs;
